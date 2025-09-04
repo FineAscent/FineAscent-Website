@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NobelCart • FineAscent</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="inverted">
+  <!-- Section 1: identical to index section 5, kept dark only on this section -->
+  <section id="nc-1" class="section cta-section section-dark">
+    <div class="container">
+      <h2>Our Product</h2>
+      <img src="images/NobelCart.png" alt="Nobel Cart">
+      <button class="btn-matte" type="button">Check it out</button>
+    </div>
+  </section>
+
+  <!-- Section 2: Product content with in-section side rail -->
+  <!-- Section: Full video section -->
+  <section class="section video-section" id="newvideo">
+    <div class="video-bg">
+      <video class="hero-video" muted playsinline preload="metadata" poster="images/NobelCart.png">
+        <source src="images/newvideo2.mp4" type="video/mp4">
+        <!-- Optional WebM for size savings; add if available
+        <source src="images/newvideo.webm" type="video/webm"> -->
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <!-- Black overlay that fades out from opacity 1 to 0 when video starts -->
+    <div class="video-fade" aria-hidden="true"></div>
+  </section>
+
+  <!-- Section 3: New section -->
+  <section class="section nobelcart-section" id="nc-3">
+    <div class="content">
+      <h2 class="nc3-tagline">Checkout instantly, no waiting—fast and seamless shopping experience.</h2>
+    </div>
+  </section>
+
+  <!-- Section 4: Fullscreen video section (e8.mp4) with shrink-out animation under text -->
+  <section class="section video-section" id="nc-4">
+    <div class="content nc4-content">
+      <h2 id="nc4-title">Table UI.
+        <br>
+       Making checkout easy.</h2>
+    </div>
+    <div class="video-bg">
+      <video class="hero-video" muted playsinline preload="metadata" poster="images/NobelCart.png">
+        <source src="images/e8.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="video-fade" aria-hidden="true"></div>
+  </section>
+
+  <!-- Section 5: New section -->
+  <section class="section nobelcart-section" id="nc-5">
+    <div class="nc5-grid">
+      <div class="nc5-text">
+        <h2>App
+          <br>
+          Allowing you to manage NobelCart purchases from one place.</h2>
+      </div>
+      <div class="nc5-media">
+        <img class="nc5-phone" src="images/unnamed-23.jpg" alt="NobelCart mobile app screenshot">
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: New section -->
+  <section class="section nobelcart-section" id="nc-6">
+    <div class="content">
+      <h2 class="nc6-title">Development in progress</h2>
+      <p class="nc6-subtitle">Trying to make NobelCart more than excellence.</p>
+      <img class="nc6-logo" src="images/cartlogo.gif" alt="NobelCart logo">
+    </div>
+  </section>
+
+  <!-- Right-side dot navigation -->
+  <nav class="dot-nav" aria-label="Section navigation">
+    <div class="dot-rail">
+      <button class="dot" data-target="#nc-1" aria-label="Section 1"></button>
+      <button class="dot" data-target="#nc-2" aria-label="Section 2"></button>
+      <button class="dot" data-target="#nc-3" aria-label="Section 3"></button>
+      <button class="dot" data-target="#nc-4" aria-label="Section 4"></button>
+      <button class="dot" data-target="#nc-5" aria-label="Section 5"></button>
+      <span class="indicator" aria-hidden="true"></span>
+    </div>
+  </nav>
+
+  <script>
+    // Intro animation on load: keep viewport on first section, animate dots from last to first
+    document.addEventListener('DOMContentLoaded', () => {
+      try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+      const root = document.documentElement;
+      const prevBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      const first = document.getElementById('nc-1');
+      if (first) first.scrollIntoView({ block: 'center' });
+      root.style.scrollBehavior = prevBehavior || '';
+      // Defer to next frame so rail can measure correctly
+      requestAnimationFrame(() => {
+        computeDotPositions();
+        // Lock page scroll/interaction during intro
+        document.body.style.overflow = 'hidden';
+        // Start with last dot active and animate up to first
+        setActiveIndex(sectionList.length - 1);
+        playIntroDotsFromLast();
+      });
+      // After 2s, swap Section 1 title to "Introducing" with a soft fade
+      const nc1Title = document.querySelector('#nc-1 h2');
+      if (nc1Title) {
+        setTimeout(() => {
+          nc1Title.classList.add('title-fade');
+          setTimeout(() => {
+            nc1Title.textContent = 'Introducing';
+            nc1Title.classList.remove('title-fade');
+          }, 600); // match CSS transition duration
+        }, 2000);
+      }
+      // Make the CTA button scroll to Section 2 (#newvideo)
+      const ctaBtn = document.querySelector('#nc-1 .btn-matte');
+      if (ctaBtn) {
+        ctaBtn.addEventListener('click', () => {
+          const target = document.getElementById('newvideo');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const vid = document.querySelector('#newvideo .hero-video');
+          if (vid && vid.ended) {
+            try { vid.currentTime = 0; vid.play(); } catch (e) {}
+          }
+        });
+      }
+    });
+    // Right-side navigation identical behavior to index (discrete paging)
+    const rail = document.querySelector('.dot-rail');
+    const indicator = document.querySelector('.dot-rail .indicator');
+    const dots = Array.from(document.querySelectorAll('.dot-rail .dot'));
+    const sectionList = Array.from(document.querySelectorAll('.section'));
+    let dotPositions = [];
+    let pagingLock = false;
+    let autoIntroPlaying = false;
+    const pageDelayMs = 800;
+
+    // Fade overlay for #newvideo: trigger only when section becomes active/in view
+    (function setupVideoRevealOnActive(){
+      const section = document.getElementById('newvideo');
+      const vid = section ? section.querySelector('.hero-video') : null;
+      if (!section || !vid) return;
+      try { vid.pause(); vid.currentTime = 0; } catch (e) {}
+      const reveal = () => section.classList.add('ready');
+      let playedOnce = false;
+      const onEnter = async () => {
+        if (playedOnce) return;
+        try { await vid.play(); } catch (e) { /* autoplay policies may block */ }
+      };
+      vid.addEventListener('playing', () => {
+        if (!playedOnce) {
+          reveal();
+          playedOnce = true;
+        }
+      }, { once: true });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            onEnter();
+          }
+        });
+      }, { threshold: [0, 0.6, 1] });
+      io.observe(section);
+    })();
+
+    // Section #nc-4: Fullscreen video reveal on active (mirror of #newvideo)
+    (function setupNc4VideoReveal(){
+      const section = document.getElementById('nc-4');
+      const vid = section ? section.querySelector('.hero-video') : null;
+      if (!section || !vid) return;
+      try { vid.pause(); vid.currentTime = 0; } catch (e) {}
+      const reveal = () => section.classList.add('ready');
+      let playedOnce = false;
+      const onEnter = async () => {
+        if (playedOnce) return;
+        try { await vid.play(); } catch (e) {}
+      };
+      vid.addEventListener('playing', () => {
+        if (!playedOnce) {
+          reveal();
+          playedOnce = true;
+          // Delay the title reveal 2.5s after video starts
+          setTimeout(() => { section.classList.add('title-show'); }, 2500);
+          // After reveal, slowly shrink out so it rests under the text
+          setTimeout(() => { section.classList.add('shrink'); }, 800); // slight delay before shrinking
+        }
+      }, { once: true });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            onEnter();
+          }
+        });
+      }, { threshold: [0, 0.6, 1] });
+      io.observe(section);
+    })();
+
+    // Section #nc-3: zoom image from near-fullscreen down to centered 1/3 width when active
+    (function setupNc3Zoom(){
+      const sec = document.getElementById('nc-3');
+      const heroEl = sec ? sec.querySelector('.zoom-hero') : null;
+      if (!sec || !heroEl) return;
+      let played = false;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (played) return;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            sec.classList.add('zoom-ready');
+            played = true;
+            io.unobserve(sec);
+          }
+        });
+      }, { threshold: [0, 0.6, 1] });
+      io.observe(sec);
+    })();
+
+    // Section #nc-3 tagline fade-in when entering view
+    (function setupNc3TaglineFade(){
+      const sec = document.getElementById('nc-3');
+      const tagline = sec ? sec.querySelector('.nc3-tagline') : null;
+      if (!sec || !tagline) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+            tagline.classList.add('show');
+            sec.classList.add('light-reveal');
+            io.unobserve(sec);
+          }
+        });
+      }, { threshold: [0, 0.4, 1] });
+      io.observe(sec);
+    })();
+
+    // Section #nc-5: reveal text with a subtle slide/fade when in view
+    (function setupNc5TextReveal(){
+      const sec = document.getElementById('nc-5');
+      if (!sec) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+            sec.classList.add('show-text');
+            io.unobserve(sec);
+          }
+        });
+      }, { threshold: [0, 0.4, 1] });
+      io.observe(sec);
+    })();
+
+    // Section #nc-6: show title for 3s, then hide it and reveal logo with slight scale
+    (function setupNc6Sequence(){
+      const sec = document.getElementById('nc-6');
+      if (!sec) return;
+      const title = sec.querySelector('.nc6-title');
+      const logo = sec.querySelector('.nc6-logo');
+      const subtitle = sec.querySelector('.nc6-subtitle');
+      let played = false;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (played) return;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            played = true;
+            setTimeout(() => {
+              if (title) title.classList.add('out');
+              setTimeout(() => {
+                if (logo) logo.classList.add('show');
+                setTimeout(() => { if (subtitle) subtitle.classList.add('show'); }, 250);
+              }, 350);
+            }, 3000); // show title for 3 seconds before transitioning
+            io.unobserve(sec);
+          }
+        });
+      }, { threshold: [0, 0.5, 1] });
+      io.observe(sec);
+    })();
+
+    function computeDotPositions() {
+      const railRect = rail.getBoundingClientRect();
+      dotPositions = dots.map(d => {
+        const r = d.getBoundingClientRect();
+        return r.top - railRect.top + r.height / 2;
+      });
+    }
+
+    function moveIndicatorTo(index) {
+      if (!indicator || dotPositions.length === 0) return;
+      const y = dotPositions[index] - (indicator.offsetHeight / 2);
+      indicator.style.transform = `translateY(${y}px)`;
+    }
+
+    function setActiveIndex(index) {
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+      moveIndicatorTo(index);
+    }
+
+    function activeIndexByViewportCenter() {
+      const viewportCenter = window.innerHeight / 2;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      sectionList.forEach((sec, i) => {
+        const rect = sec.getBoundingClientRect();
+        const secCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(secCenter - viewportCenter);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+      });
+      return bestIdx;
+    }
+
+    function navigateToIndex(idx) {
+      const clamped = Math.max(0, Math.min(sectionList.length - 1, idx));
+      const target = sectionList[clamped];
+      if (!target) return;
+      pagingLock = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setActiveIndex(clamped);
+      setTimeout(() => { pagingLock = false; }, pageDelayMs);
+    }
+
+    // Click to scroll (disabled during intro)
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        if (autoIntroPlaying) return;
+        const sel = dot.getAttribute('data-target');
+        const target = document.querySelector(sel);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setActiveIndex(i);
+        }
+      });
+    });
+
+    function pageNext() { navigateToIndex(activeIndexByViewportCenter() + 1); }
+    function pagePrev() { navigateToIndex(activeIndexByViewportCenter() - 1); }
+
+    // Wheel paging
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (pagingLock || autoIntroPlaying) return;
+      const dy = e.deltaY;
+      if (dy > 15) pageNext();
+      else if (dy < -15) pagePrev();
+    }, { passive: false });
+
+    // Touch paging
+    let touchStartY = null;
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      if (touchStartY == null) return;
+      const y = e.touches[0].clientY;
+      const dy = y - touchStartY;
+      e.preventDefault();
+      if (pagingLock || autoIntroPlaying) return;
+      const threshold = 24;
+      if (dy <= -threshold) { pageNext(); touchStartY = null; }
+      else if (dy >= threshold) { pagePrev(); touchStartY = null; }
+    }, { passive: false });
+    window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
+
+    // Helper: Play intro by animating dots only (no content scroll)
+    async function playIntroDotsFromLast() {
+      autoIntroPlaying = true;
+      const startIdx = sectionList.length - 1;
+      const stepDelay = 450; // ms between dot steps
+      for (let i = startIdx - 1; i >= 0; i--) {
+        setActiveIndex(i);
+        await new Promise(r => setTimeout(r, stepDelay));
+      }
+      // Ensure first is active and re-enable page interactions
+      setActiveIndex(0);
+      document.body.style.overflow = '';
+      autoIntroPlaying = false;
+    }
+
+    // Recompute on resize
+    window.addEventListener('resize', () => {
+      computeDotPositions();
+      const idx = activeIndexByViewportCenter();
+      setActiveIndex(idx >= 0 ? idx : 0);
+    });
+  </script>
+</body>
+</html>

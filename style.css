@@ -1,0 +1,686 @@
+:root { color-scheme: light; }
+
+/* ===== Section 5: CTA and Matte Button ===== */
+.cta-section {
+  /* mirror centered layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+.cta-section .container {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-matte {
+  appearance: none;
+  border: none;              /* no border */
+  outline: none;
+  background: #1a1a1a;      /* matte dark */
+  color: #fff;               /* white text */
+  padding: 14px 26px;
+  border-radius: 999px;      /* pill style */
+  font-size: clamp(16px, 2.2vw, 18px);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  transition: background 220ms ease, transform 160ms ease, box-shadow 220ms ease;
+  cursor: pointer;
+}
+.btn-matte:hover {
+  background: #0f0f0f;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+}
+.btn-matte:active {
+  transform: translateY(1px);
+}
+.btn-matte:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.15), 0 3px 10px rgba(0,0,0,0.22);
+}
+
+/* Section 5 specific adjustments */
+.cta-section img {
+  display: block;
+  margin: 0 auto;
+  opacity: 0.99;
+  width: clamp(220px, 60vw, 720px);
+  height: auto;
+}
+/* ===== Section #nc-6: nice centered layout with spacing ===== */
+#nc-6 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+}
+#nc-6 .content {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 4.5vh, 40px);
+  padding: clamp(10px, 4vh, 40px) 20px;
+}
+#nc-6 h2 {
+  margin: 0;
+  font-size: clamp(20px, 4vw, 36px);
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+}
+#nc-6 .nc6-subtitle {
+  margin: 0;
+  font-size: clamp(14px, 2.6vw, 18px);
+  line-height: 1.6;
+  color: rgba(255,255,255,0.82);
+  opacity: 0;                 /* start hidden for reveal */
+  transform: translateY(6px);
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-6 .nc6-subtitle.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+#nc-6 .nc6-logo {
+  opacity: 0;                /* start hidden */
+  transform: scale(0.96);    /* slight downscale */
+  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* make logo larger than default image size */
+  width: clamp(260px, 48vw, 640px);
+}
+#nc-6 .nc6-logo.show {
+  opacity: 0.9;
+  transform: scale(1.00);    /* gentle pop */
+}
+#nc-6 .nc6-title {
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-6 .nc6-title.out {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+#nc-6 img {
+  width: clamp(200px, 40vw, 520px);
+  height: auto;
+  border-radius: 16px;
+  
+}
+.cta-section .btn-matte {
+  background: #ffffff;   /* white button */
+  color: #111;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  margin-top: 26px;      /* move button a little down */
+}
+.cta-section .btn-matte:hover {
+  background: #f5f5f5;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.16);
+}
+
+/* Local loading screen effect for Section 5 only */
+#section-5.loading-mode {
+  background: #000 !important;
+  color: #fff !important;
+  transition: background 1200ms ease, color 1200ms ease;
+  position: relative;
+  z-index: 2; /* float above neighbors visually */
+}
+#section-5.loading-mode .btn-matte {
+  background: #fff;
+  color: #111;
+}
+#section-5.loading-mode img {
+  opacity: 1;
+}
+
+/* Utility: make a single section dark (only that section) */
+.section-dark {
+  background: #000 !important;
+  color: #fff !important;
+}
+.section-dark p { color: #e9e9e9; }
+.section-dark .btn-matte { background: #fff; color: #111; }
+
+/* ===== Inverted (Dark) Theme ===== */
+body.inverted {
+  background: #111;
+  color: #f5f5f5;
+  transition: background 400ms ease, color 400ms ease;
+}
+body.inverted .section {
+  background: #000; /* pure black to match first section */
+  color: #f5f5f5;
+}
+body.inverted #mission p,
+body.inverted #mission-2 p { color: #ddd; }
+
+/* Right-side nav in dark */
+body.inverted .dot-rail {
+  background: rgba(255,255,255,0.10); /* subtle light rail over dark bg */
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35) inset, 0 6px 18px rgba(0,0,0,0.25);
+}
+body.inverted .dot-rail .dot { background: rgba(255,255,255,0.55); }
+body.inverted .dot-rail .dot:hover:not(.active),
+body.inverted .dot-rail .dot:focus-visible:not(.active) {
+  background: rgba(255,255,255,0.75);
+}
+body.inverted .dot-rail .dot.active { background: #ffffff; }
+body.inverted .dot-rail .indicator { background: #ffffff; }
+
+/* Keep CTA button white in dark mode */
+body.inverted .cta-section .btn-matte {
+  background: #ffffff;
+  color: #111;
+}
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: #E3E3E3;  /* white */
+  color: #000;       /* black */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  min-height: 220vh;   /* allow more scrolling */
+  overflow-x: hidden; /* prevent horizontal scrolling */
+  /* Snap vertically to sections */
+  scroll-snap-type: y mandatory;
+  
+}
+
+img.logo {
+  width: clamp(500px, 80vw, 1200px); /* bigger image size */
+  height: auto;
+  display: block;
+  margin: 0 auto;   /* center horizontally without large offset */
+  opacity: 0.1; /* start mostly transparent */
+  transform: translateY(100px); /* start below final position */
+  transition: opacity 4s ease-out, transform 4s ease-out; /* longest reveal */
+}
+
+img.logo.reveal {
+  opacity: 1; /* reveal to fully visible */
+  transform: translateY(0);
+}
+
+/* Section styles */
+.section {
+  padding: 60px 20px;
+  background: #E3E3E3;
+  color: #111;
+  /* Snap each section to the center of the viewport */
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* Full-bleed video section (no blur) */
+.video-section {
+  position: relative;
+  min-height: 100vh;
+  padding: 0;              /* remove default section padding */
+  background: #000;        /* avoid white flash while loading */
+  overflow: hidden;        /* crop overflow cleanly */
+}
+.video-section .video-bg {
+  position: absolute;
+  inset: 0;                /* top:0; right:0; bottom:0; left:0 */
+}
+.video-section .hero-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;       /* fill without distortion; crisp */
+  object-position: center; /* keep center focus */
+}
+
+/* Black overlay that fades out when video starts */
+.video-section .video-fade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 1;
+  transition: opacity 4000ms ease-in-out;
+  pointer-events: none; /* overlay is visual only */
+}
+.video-section.ready .video-fade {
+  opacity: 0;
+}
+
+/* ===== Section #nc-4: shrink video under heading after reveal ===== */
+#nc-4 {
+  display: grid;
+  grid-template-rows: auto 1fr; /* title | video area */
+}
+/* ===== Section #nc-1: title swap animation support ===== */
+#nc-1 h2 {
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-1 h2.title-fade {
+  opacity: 0;
+  transform: translateY(6px);
+}
+#nc-4 .nc4-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(40px, 40vh, 108px) 20px 0; /* nudge heading a bit further down */
+}
+#nc-4 #nc4-title {
+  margin: 0;
+  font-size: clamp(24px, 5vw, 46px);
+  letter-spacing: 0.2px;
+  opacity: 0;                    /* start hidden */
+  transform: translateY(10px);   /* slight offset */
+  transition: opacity 4200ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 4200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-4.title-show #nc4-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+#nc-4 .video-bg {
+  transform-origin: top center;
+  transition: transform 6000ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-radius 1200ms ease,
+              box-shadow 1200ms ease;
+}
+#nc-4 .hero-video {
+  transition: border-radius 1200ms ease, filter 400ms ease;
+  filter: brightness(0.96); /* slightly darken video */
+}
+/* Shrink state: move video down and scale it so it sits under the heading */
+#nc-4.shrink .video-bg {
+  transform: translateY(clamp(21vh, 31vh, 41vh)) scale(0.55);
+}
+#nc-4.shrink .hero-video {
+  border-radius: 16px; /* give it a card look when small */
+}
+/* Add spacing between title and video when shrunk */
+#nc-4.shrink .nc4-content {
+  padding-bottom: clamp(16px, 6vh, 56px);
+}
+
+@media (max-width: 760px) {
+  #nc-4.shrink .video-bg {
+    transform: translateY(clamp(24vh, 34vh, 44vh)) scale(0.6);
+  }
+}
+
+/* Removed borders between sections for a seamless look */
+/* .section + .section { border-top: 1px solid #eee; } */
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#mission,
+#mission-2 {
+  /* Center section content in viewport */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+#section-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+#section-1 .logo {
+  margin: 0 auto; /* override large margin on logo when in section 1 */
+}
+/* Make section-1 container full width and center content so image doesn't drift */
+#section-1 .container {
+  max-width: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#section-3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+#section-3 img {
+  width: clamp(180px, 45vw, 520px);
+  height: auto;
+  opacity: 0.99;
+  display: block;
+}
+#section-3 .inline-video {
+  width: clamp(180px, 45vw, 520px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+/* Generic section visibility animation */
+.section {
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), /* easeOutCubic */
+              transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.section.out-of-view {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.section.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    transition: none;
+  }
+}
+#mission h2,
+#mission-2 h2 {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 5vw, 44px);
+  letter-spacing: 0.2px;
+}
+
+#mission p,
+#mission-2 p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: clamp(18px, 2.6vw, 20px);
+  color: #333;
+}
+
+/* Hide scrollbars (preserve scrolling) */
+html {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge Legacy */
+  scroll-behavior: smooth;      /* Smooth scrolling */
+}
+html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
+  display: none;
+}
+
+/* ===== Right-side Dot Navigation ===== */
+.dot-nav {
+  position: fixed;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  pointer-events: none; /* allow clicks only on dots */
+}
+
+.dot-rail {
+  position: relative;
+  width: 24px;
+  padding: 18px 6px; /* breathing room top/bottom */
+  border-radius: 999px;
+  background: rgba(0,0,0,0.06);
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  pointer-events: auto; /* enable clicks on children */
+}
+
+.dot-rail .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.22);
+  cursor: pointer;
+  transition: transform 220ms ease, background 220ms ease, box-shadow 220ms ease;
+  outline: none;
+  position: relative;
+  z-index: 1;
+}
+.dot-rail .dot:hover:not(.active),
+.dot-rail .dot:focus-visible:not(.active) {
+  transform: scale(1.25);
+  background: rgba(0,0,0,0.35);
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.08);
+}
+
+.dot-rail .indicator {
+  position: absolute;
+  left: 50%; /* center horizontally */
+  margin-left: -6px; /* half of width */
+  top: 18px; /* initial; JS will translateY it */
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #111; /* primary indicator color */
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  pointer-events: none;
+  z-index: 2;
+  display: none; /* hide moving indicator; use active dot instead */
+}
+
+/* Active dot: solid black (no duplicate indicator) */
+.dot-rail .dot.active {
+  background: #111;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ===== In-section Side Rail (NobelCart page) ===== */
+.nobelcart-section {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr auto; /* content | side rail */
+  gap: 24px;
+  align-items: center;
+}
+.nobelcart-section .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+.nobelcart-section .content img {
+  width: clamp(240px, 60vw, 840px);
+  height: auto;
+}
+/* ===== Section #nc-5: Text left, phone image right ===== */
+#nc-5 {
+  display: block; /* override grid from generic .nobelcart-section if any */
+}
+#nc-5 .nc5-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr; /* text | image */
+  align-items: center;
+  gap: clamp(16px, 4vw, 48px);
+  padding: 0 20px;
+}
+#nc-5 .nc5-text {
+  text-align: left;
+}
+#nc-5 .nc5-text h2 {
+  margin: 0;
+  font-size: clamp(24px, 4.8vw, 46px);
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  opacity: 0;                   /* start hidden */
+  transform: translateY(10px);  /* slight offset */
+  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-5.show-text .nc5-text h2 {
+  opacity: 1;
+  transform: translateY(0);
+}
+#nc-5 .nc5-media {
+  display: flex;
+  justify-content: flex-end;
+  align-self: end; /* sit lower within the row */
+  margin-top: clamp(8px, 10vh, 160px); /* push image down */
+}
+#nc-5 .nc5-phone {
+  display: block;
+  width: clamp(220px, 28vw, 380px); /* phone-sized on desktop */
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+@media (max-width: 820px) {
+  #nc-5 .nc5-grid {
+    grid-template-columns: 1fr; /* stack */
+    text-align: center;
+  }
+  #nc-5 .nc5-text { text-align: center; }
+  #nc-5 .nc5-media { justify-content: center; align-self: center; margin-top: 12px; }
+  #nc-5 .nc5-phone { width: clamp(240px, 60vw, 420px); }
+}
+/* Section #nc-3 zoom hero: start large and zoom out when in view */
+#nc-3 .zoom-hero {
+  display: block;
+  margin: 0 auto;
+  width: clamp(200px, 33vw, 640px); /* base size before transform */
+  height: auto;
+  border-radius: 16px; /* rounded corners for video/image */
+  transform: scale(1); /* start at normal size */
+  opacity: 1; /* fully visible initially */
+  transform-origin: center center;
+  /* Zoom runs 7000ms; then after 2000ms delay, fade opacity over 2000ms */
+  transition:
+    transform 7000ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 900ms ease 9000ms;
+}
+#nc-3.zoom-ready .zoom-hero {
+  transform: scale(2); /* end state: 2x (near full screen) */
+  opacity: 0; /* fade out after delay */
+}
+/* After-content under the video: soft fade from black to white after video finishes */
+#nc-3 .nc3-after {
+  margin-top: 16px;
+  opacity: 0;
+  color: #000; /* start black */
+  transform: translateY(8px);
+  text-align: center; /* center title and text */
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+  transition:
+    opacity 1200ms ease 10000ms,  /* start ~after 10s */
+    color 1500ms ease 10000ms,
+    transform 1200ms ease 10000ms;
+}
+#nc-3.zoom-ready .nc3-after {
+  opacity: 1;
+  color: #fff; /* end white */
+  transform: translateY(0);
+}
+#nc-3 .nc3-title {
+  margin: 8px 0 6px;
+  font-size: clamp(22px, 4.6vw, 36px);
+  letter-spacing: 0.2px;
+}
+#nc-3 .nc3-desc {
+  margin: 0;
+  font-size: clamp(14px, 2.6vw, 18px);
+  line-height: 1.6;
+  opacity: 0.92; /* slight softness on end */
+  /* clamp to exactly 2 lines */
+  display: -webkit-box;
+  line-clamp: 2; /* standard property for some engines */
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+/* NC-3 dark overlay that fades out to reveal light */
+#nc-3 {
+  position: relative;
+  overflow: hidden;
+}
+#nc-3::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.65; /* stronger dark start */
+  transition: opacity 3000ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+#nc-3.light-reveal::after {
+  opacity: 0; /* fade to light */
+}
+#nc-3 .content { position: relative; z-index: 1; }
+/* NC-3 Tagline fade-in */
+#nc-3 .nc3-tagline {
+  margin: 0;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: clamp(22px, 4.8vw, 40px);
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+  opacity: 0;
+  color: #cfcfcf; /* start darker, then lighten */
+  transform: translateY(14px);
+  transition: opacity 2000ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 2000ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 3000ms ease;
+}
+#nc-3 .nc3-tagline.show {
+  opacity: 1;
+  transform: translateY(0);
+  color: #ffffff;
+}
+.side-rail {
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  padding: 18px 6px;
+  border-radius: 999px;
+  background: #000; /* black rail to match inverted look */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.side-rail .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.55);
+}
+.side-rail .dot.active { background: #fff; }
+
+@media (max-width: 760px) {
+  .nobelcart-section { grid-template-columns: 1fr; }
+  .side-rail { position: static; transform: none; width: auto; padding: 8px 10px; flex-direction: row; gap: 12px; justify-content: center; }
+}
+
+@media (max-width: 640px) {
+  .dot-nav { right: 10px; }
+  .dot-rail { gap: 16px; width: 22px; padding: 16px 5px; }
+  .dot-rail .dot { width: 10px; height: 10px; }
+  .dot-rail .indicator { width: 10px; height: 10px; left: 50%; margin-left: -5px; display: none; }
+}

@@ -1,0 +1,17 @@
+.DS_Store
+# OS / editor files
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Build/Cache (none used now, but future-proof)
+dist/
+build/
+.cache/
