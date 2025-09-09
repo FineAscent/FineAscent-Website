@@ -194,7 +194,7 @@ body {
 }
 
 img.logo {
-  width: clamp(500px, 80vw, 1200px); /* bigger image size */
+  width: clamp(220px, 80vw, 1200px); /* allow smaller size on phones */
   height: auto;
   display: block;
   margin: 0 auto;   /* center horizontally without large offset */
@@ -393,7 +393,7 @@ img.logo.reveal {
 #mission h2,
 #mission-2 h2 {
   margin: 0 0 12px;
-  font-size: clamp(28px, 5vw, 44px);
+  font-size: clamp(24px, 5.6vw, 42px);
   letter-spacing: 0.2px;
 }
 
@@ -401,7 +401,7 @@ img.logo.reveal {
 #mission-2 p {
   margin: 0;
   line-height: 1.6;
-  font-size: clamp(18px, 2.6vw, 20px);
+  font-size: clamp(16px, 3.8vw, 20px);
   color: #333;
 }
 
@@ -683,4 +683,31 @@ html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
   .dot-rail { gap: 16px; width: 22px; padding: 16px 5px; }
   .dot-rail .dot { width: 10px; height: 10px; }
   .dot-rail .indicator { width: 10px; height: 10px; left: 50%; margin-left: -5px; display: none; }
+  /* Snap full sections from the top on mobile for clean paging */
+  .section { scroll-snap-align: start; }
+  /* Ensure sections exactly fill the small viewport height on mobile */
+  .section,
+  #mission,
+  #mission-2,
+  #section-1,
+  #section-3,
+  .cta-section { min-height: 100svh; }
+}
+
+@media (max-width: 480px) {
+  .section { padding: 40px 16px; }
+  #mission h2, #mission-2 h2 { font-size: clamp(22px, 7vw, 30px); }
+  #mission p, #mission-2 p { font-size: clamp(15px, 4.2vw, 18px); line-height: 1.65; }
+  /* Ensure logo scales nicely and stays within viewport */
+  img.logo { width: min(86vw, 520px); }
+  /* Make mission text feel like short poetic lines instead of a block paragraph */
+  #mission p, #mission-2 p {
+    max-width: 26ch;              /* keep lines short for a clean look */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    text-wrap: balance;           /* Safari/Chrome: better line breaks */
+    letter-spacing: 0.1px;
+    line-height: 1.7;
+  }
 }

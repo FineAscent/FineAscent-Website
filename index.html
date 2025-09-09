@@ -1,7 +1,10 @@
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
     <title>FineAscent</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -113,17 +116,18 @@ const sectionObserver = new IntersectionObserver((entries) => {
 
 // Start observing the logo
 document.addEventListener('DOMContentLoaded', () => {
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
   // Reset any transient loading state and starting position when returning to this page
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
   const sec5Init = document.getElementById('section-5');
   if (sec5Init) sec5Init.classList.remove('loading-mode');
-  // Ensure we start from Section 1 centered without smooth animation
+  // Ensure we start from Section 1, centered on desktop, top-aligned on mobile, without smooth animation
   const root = document.documentElement;
   const prevBehavior = root.style.scrollBehavior;
   root.style.scrollBehavior = 'auto';
   window.scrollTo(0, 0);
   const firstSection = document.getElementById('section-1');
-  if (firstSection) firstSection.scrollIntoView({ block: 'center' });
+  if (firstSection) firstSection.scrollIntoView({ block: isMobile ? 'start' : 'center' });
   root.style.scrollBehavior = prevBehavior || '';
   const logo = document.querySelector('.logo');
   observer.observe(logo);
@@ -200,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sel = dot.getAttribute('data-target');
       const target = document.querySelector(sel);
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
         setActiveIndex(i);
       }
     });
@@ -213,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pagingLock) return; // avoid conflicts during paging
       const sec5 = document.getElementById('section-5');
       if (!sec5) return;
-      // Ensure Section 5 is centered before animating
-      sec5.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Ensure Section 5 is correctly aligned before animating
+      sec5.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
       // Trigger local loading look
       sec5.classList.add('loading-mode');
       // After a short delay, navigate to the NobelCart page
@@ -246,33 +250,36 @@ document.addEventListener('DOMContentLoaded', () => {
   function pageNext() { navigateToIndex(activeIndexByViewportCenter() + 1); }
   function pagePrev() { navigateToIndex(activeIndexByViewportCenter() - 1); }
 
-  // Wheel: treat scroll like clicking next/prev dot
-  window.addEventListener('wheel', (e) => {
-    // prevent native scrolling
-    e.preventDefault();
-    if (pagingLock) return;
-    const dy = e.deltaY;
-    if (dy > 15) pageNext();
-    else if (dy < -15) pagePrev();
-  }, { passive: false });
+  // Desktop-only discrete paging: on mobile, rely on native scroll-snap for full-section snaps
+  if (!isMobile) {
+    // Wheel: treat scroll like clicking next/prev dot
+    window.addEventListener('wheel', (e) => {
+      // prevent native scrolling
+      e.preventDefault();
+      if (pagingLock) return;
+      const dy = e.deltaY;
+      if (dy > 15) pageNext();
+      else if (dy < -15) pagePrev();
+    }, { passive: false });
 
-  // Touch: vertical swipe to page
-  let touchStartY = null;
-  window.addEventListener('touchstart', (e) => {
-    if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-  window.addEventListener('touchmove', (e) => {
-    if (touchStartY == null) return;
-    const y = e.touches[0].clientY;
-    const dy = y - touchStartY;
-    // prevent native scroll while paging
-    e.preventDefault();
-    if (pagingLock) return;
-    const threshold = 24; // pixels
-    if (dy <= -threshold) { pageNext(); touchStartY = null; }
-    else if (dy >= threshold) { pagePrev(); touchStartY = null; }
-  }, { passive: false });
-  window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
+    // Touch: vertical swipe to page
+    let touchStartY = null;
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      if (touchStartY == null) return;
+      const y = e.touches[0].clientY;
+      const dy = y - touchStartY;
+      // prevent native scroll while paging
+      e.preventDefault();
+      if (pagingLock) return;
+      const threshold = 24; // pixels
+      if (dy <= -threshold) { pageNext(); touchStartY = null; }
+      else if (dy >= threshold) { pagePrev(); touchStartY = null; }
+    }, { passive: false });
+    window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
+  }
 
   // Initialize indicator after layout
   requestAnimationFrame(() => {
