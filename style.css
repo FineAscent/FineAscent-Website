@@ -687,7 +687,15 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 }
 
 @media (max-width: 640px) {
-  .dot-nav { right: 12px; }
+  /* Keep nav fixed and visually centered vertically even as the browser UI shows/hides */
+  .dot-nav {
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    top: 0;             /* center using top/bottom instead of translateY */
+    bottom: 0;
+    transform: none;
+    display: flex;
+    align-items: center; /* vertically center the rail */
+  }
   /* Slightly wider rail with soft glassy background */
   .dot-rail {
     gap: 13px;
