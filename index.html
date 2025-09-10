@@ -175,6 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
     moveIndicatorTo(index);
   }
 
+  // Toggle right-side nav visibility: hidden on Section 1, visible otherwise
+  function setNavVisibilityBySectionId(id) {
+    if (!id) return;
+    if (id === 'section-1') document.body.classList.remove('nav-visible');
+    else document.body.classList.add('nav-visible');
+  }
+
   function activeIndexByViewportCenter() {
     const viewportCenter = window.innerHeight / 2;
     let bestIdx = 0;
@@ -194,6 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => {
       const idx = activeIndexByViewportCenter();
       setActiveIndex(idx);
+      // Update nav visibility based on section near center
+      const current = sectionList[idx];
+      if (current && current.id) setNavVisibilityBySectionId(current.id);
       ticking = false;
     });
   }
@@ -206,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
         setActiveIndex(i);
+        if (target.id) setNavVisibilityBySectionId(target.id);
       }
     });
   });
@@ -287,6 +298,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set indicator to current visible section (fallback to first)
     const idx = activeIndexByViewportCenter();
     setActiveIndex(idx >= 0 ? idx : 0);
+    const current = sectionList[idx];
+    setNavVisibilityBySectionId(current && current.id ? current.id : 'section-1');
   });
 
   // Recompute on resize

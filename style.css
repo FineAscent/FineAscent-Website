@@ -423,6 +423,8 @@ html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
   transform: translateY(-50%);
   z-index: 1000;
   pointer-events: none; /* allow clicks only on dots */
+  opacity: 1;
+  transition: opacity 300ms ease;
 }
 
 .dot-rail {
@@ -438,6 +440,12 @@ html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
   gap: 18px;
   pointer-events: auto; /* enable clicks on children */
 }
+
+/* NobelCart only (body has .inverted): hide nav over Section 1 then reveal after */
+body.inverted .dot-nav { opacity: 1; transition: opacity 300ms ease; }
+body.inverted:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
+/* Index page: hide nav when body does not have .nav-visible */
+body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 
 .dot-rail .dot {
   width: 12px;
@@ -719,6 +727,69 @@ html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
   #section-1,
   #section-3,
   .cta-section { min-height: 100svh; }
+
+  /* NobelCart Section 2 (#newvideo): show as a centered rectangle card instead of full-screen */
+  #newvideo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0; /* breathing room top/bottom */
+    background: #000; /* maintain dark surround */
+    position: relative; /* for background blur layer */
+  }
+  /* Full-bleed blurred background video, sits behind the rectangle */
+  #newvideo .video-bg-blur {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+  }
+  #newvideo .video-bg-blur .bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(18px) brightness(0.6); /* soften and darken */
+    transform: scale(1.1); /* hide blur edges */
+  }
+  #newvideo .video-bg {
+    position: relative;   /* override absolute full-bleed */
+    inset: auto;
+    width: clamp(260px, 92vw, 720px);
+    aspect-ratio: 16 / 9; /* rectangular video */
+    border-radius: 16px;
+    overflow: hidden;     /* clip video corners */
+    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+    z-index: 1;           /* above blurred layer */
+  }
+  #newvideo .hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* fill the rectangle without distortion */
+    display: block;
+  }
+  /* Hide the full-screen fade overlay for the boxed layout on mobile */
+  #newvideo .video-fade { display: none; }
+
+  /* NobelCart Section 4 (#nc-4): start full-screen, then shrink to a rectangle under the text */
+  /* Keep full-screen defaults from .video-section; only adjust shrink state and typography */
+  #nc-4 .nc4-content { padding: clamp(24px, 28vh, 80px) 20px 0; }
+  #nc-4 #nc4-title { font-size: clamp(18px, 6.2vw, 26px); }
+  /* On mobile, when shrinking, convert the full-bleed video into the same rectangle as Section 2 */
+  #nc-4 { display: block; }
+  #nc-4 .hero-video { width: 100%; height: 100%; object-fit: cover; }
+  #nc-4.shrink .video-bg {
+    position: relative;   /* override absolute full-bleed */
+    inset: auto;
+    width: clamp(260px, 92vw, 720px);  /* match Section 2 */
+    aspect-ratio: 16 / 9;              /* match Section 2 */
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+    transform: none;       /* no scale/translate; use actual size */
+    margin: 12px auto 0;   /* center under the text */
+  }
 }
 
 @media (max-width: 480px) {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NobelCart • FineAscent</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -92,13 +92,14 @@
   <script>
     // Intro animation on load: keep viewport on first section, animate dots from last to first
     document.addEventListener('DOMContentLoaded', () => {
+      const isMobile = window.matchMedia('(max-width: 640px)').matches;
       try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
       const root = document.documentElement;
       const prevBehavior = root.style.scrollBehavior;
       root.style.scrollBehavior = 'auto';
       window.scrollTo(0, 0);
       const first = document.getElementById('nc-1');
-      if (first) first.scrollIntoView({ block: 'center' });
+      if (first) first.scrollIntoView({ block: isMobile ? 'start' : 'center' });
       root.style.scrollBehavior = prevBehavior || '';
       // Defer to next frame so rail can measure correctly
       requestAnimationFrame(() => {
@@ -125,7 +126,7 @@
       if (ctaBtn) {
         ctaBtn.addEventListener('click', () => {
           const target = document.getElementById('newvideo');
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
           const vid = document.querySelector('#newvideo .hero-video');
           if (vid && vid.ended) {
             try { vid.currentTime = 0; vid.play(); } catch (e) {}
@@ -191,6 +192,13 @@
           setTimeout(() => { section.classList.add('title-show'); }, 2500);
           // After reveal, slowly shrink out so it rests under the text
           setTimeout(() => { section.classList.add('shrink'); }, 800); // slight delay before shrinking
+          // On mobile, expand from phone-like to rectangle after a moment
+          try {
+            const isMobile = window.matchMedia('(max-width: 640px)').matches;
+            if (isMobile) {
+              setTimeout(() => { section.classList.add('expand'); }, 1200);
+            }
+          } catch (e) {}
         }
       }, { once: true });
       const io = new IntersectionObserver((entries) => {
@@ -318,8 +326,11 @@
       const target = sectionList[clamped];
       if (!target) return;
       pagingLock = true;
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const isMobile = window.matchMedia('(max-width: 640px)').matches;
+      target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
       setActiveIndex(clamped);
+      // Toggle nav visibility based on destination section (hide on Section 1)
+      setNavVisibilityBySectionId(target.id);
       setTimeout(() => { pagingLock = false; }, pageDelayMs);
     }
 
@@ -330,8 +341,10 @@
         const sel = dot.getAttribute('data-target');
         const target = document.querySelector(sel);
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const isMobile = window.matchMedia('(max-width: 640px)').matches;
+          target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
           setActiveIndex(i);
+          setNavVisibilityBySectionId(target.id);
         }
       });
     });
@@ -339,31 +352,36 @@
     function pageNext() { navigateToIndex(activeIndexByViewportCenter() + 1); }
     function pagePrev() { navigateToIndex(activeIndexByViewportCenter() - 1); }
 
-    // Wheel paging
-    window.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      if (pagingLock || autoIntroPlaying) return;
-      const dy = e.deltaY;
-      if (dy > 15) pageNext();
-      else if (dy < -15) pagePrev();
-    }, { passive: false });
+    // Desktop-only discrete paging; on mobile, rely on native scroll-snap
+    (function enableDesktopPaging(){
+      const isMobile = window.matchMedia('(max-width: 640px)').matches;
+      if (isMobile) return;
+      // Wheel paging
+      window.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (pagingLock || autoIntroPlaying) return;
+        const dy = e.deltaY;
+        if (dy > 15) pageNext();
+        else if (dy < -15) pagePrev();
+      }, { passive: false });
 
-    // Touch paging
-    let touchStartY = null;
-    window.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    window.addEventListener('touchmove', (e) => {
-      if (touchStartY == null) return;
-      const y = e.touches[0].clientY;
-      const dy = y - touchStartY;
-      e.preventDefault();
-      if (pagingLock || autoIntroPlaying) return;
-      const threshold = 24;
-      if (dy <= -threshold) { pageNext(); touchStartY = null; }
-      else if (dy >= threshold) { pagePrev(); touchStartY = null; }
-    }, { passive: false });
-    window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
+      // Touch paging
+      let touchStartY = null;
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (touchStartY == null) return;
+        const y = e.touches[0].clientY;
+        const dy = y - touchStartY;
+        e.preventDefault();
+        if (pagingLock || autoIntroPlaying) return;
+        const threshold = 24;
+        if (dy <= -threshold) { pageNext(); touchStartY = null; }
+        else if (dy >= threshold) { pagePrev(); touchStartY = null; }
+      }, { passive: false });
+      window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
+    })();
 
     // Helper: Play intro by animating dots only (no content scroll)
     async function playIntroDotsFromLast() {
@@ -379,6 +397,37 @@
       document.body.style.overflow = '';
       autoIntroPlaying = false;
     }
+
+    // ----- Section observer: update active dot and nav visibility -----
+    function setNavVisibilityBySectionId(id) {
+      // Hide nav on Section 1 (nc-1), show otherwise
+      if (!id) return;
+      if (id === 'nc-1') document.body.classList.remove('nav-visible');
+      else document.body.classList.add('nav-visible');
+    }
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          // Update active dot to match the section in view
+          const index = sectionList.findIndex(s => s.id === id);
+          if (index >= 0) setActiveIndex(index);
+          // Toggle nav visibility based on section
+          setNavVisibilityBySectionId(id);
+        }
+      });
+    }, { threshold: 0.6 });
+
+    // Observe all sections
+    sectionList.forEach(sec => sectionObserver.observe(sec));
+
+    // Initialize nav visibility on load (before scrolling)
+    (function initNavVisibility(){
+      const idx = activeIndexByViewportCenter();
+      const current = sectionList[idx];
+      setNavVisibilityBySectionId(current && current.id ? current.id : 'nc-1');
+    })();
 
     // Recompute on resize
     window.addEventListener('resize', () => {
