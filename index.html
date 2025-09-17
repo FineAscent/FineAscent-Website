@@ -1,329 +1,145 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>FineAscent</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
-<body>
-<section id="section-1" class="section">
-  <div class="container">
-    <img class="logo" src="images/FineAscent2.png" alt="FineAscent logo">
-  </div>
-  </section>
-  <section id="mission" class="section">
+<body class="index">
     <div class="container">
-      <h2>Our Vision</h2>
-      <p>
-        Paving the way to even greater bursts of excellence
-        through pushing the limits of what's possible
-        <br>
-        Excellence enabled by previous excellence
-      </p>
+        <div id="header-placeholder"></div>
+
+        <div class="left-section">
+            <div class="section-header">
+                <div class="tabbar" role="tablist" aria-label="Home navigation">
+                    <button class="tab active" role="tab" aria-selected="true" tabindex="0">
+                        <span>Pick A Category</span>
+                    </button>
+                    <button class="tab" role="tab" aria-selected="false" tabindex="-1">
+                        <span>Cabinet</span>
+                    </button>
+                </div>
+                <!-- Search bar intentionally omitted on index.html -->
+            </div>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-title">Fruits & Veggies</div>
+                    <div class="category-icons">
+                        <img src="Images/strawberry.png" alt="Strawberry icon" />
+                        <img src="Images/tomato.png" alt="Tomato icon" />
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-title">Dairy & Eggs</div>
+                    <div class="category-icons">
+                        <img src="Images/milk-bottle.png" alt="Salmon icon" />
+                        <img src="Images/egg.png" alt="Egg icon" />
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-title">Bakery</div>
+                    <div class="category-icons">
+                        <img src="Images/bread.png" alt="Bread icon" />
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-title">Frozen Foods</div>
+                    <div class="category-icons">
+                        <img src="Images/snowflake.png" alt="snowflake icon" />
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">Beverages</div>
+                    <div class="category-icons">
+                        <img src="Images/soda drink.png" alt="soda drink icon" />
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">Snacks</div>
+                    <div class="category-icons">
+                        <img src="Images/candies.png" alt="candies icon" />
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">Spices</div>
+                    <div class="category-icons">
+                        <img src="Images/spices.png" alt="spices icon" />
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">Sauces and Oils</div>
+                    <div class="category-icons">
+                        <img src="Images/ketchup.png" alt="ketchup icon" />
+                        <img src="Images/olive-oil.png" alt="oil icon" />
+                        
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-title">Meat & Poultry</div>
+                    <div class="category-icons">
+                        <img src="Images/meat.png" alt="meat icon" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <h2 class="total-header">Total</h2>
+            
+            <div class="cart-items">
+                <div class="cart-item">
+                    <div class="item-number">1</div>
+                    <div class="item-label">item</div>
+                    <div class="item-price">$1.00</div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="item-number">2</div>
+                    <div class="item-label">item</div>
+                    <div class="item-price">$2.00</div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="item-number">3</div>
+                    <div class="item-label">item</div>
+                    <div class="item-price">$3.00</div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="item-number">4</div>
+                    <div class="item-label">item</div>
+                    <div class="item-price">$4.00</div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="item-number">5</div>
+                    <div class="item-label">item</div>
+                    <div class="item-price">$5.00</div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="item-number">6</div>
+                    <div class="item-label">item</div>
+                    <div class="item-price">$10.00</div>
+                </div>
+            </div>
+
+            <div class="subtotal">
+                <span class="subtotal-label">SubTotal:</span>
+                <span class="subtotal-amount">$25.00</span>
+            </div>
+
+            <button class="checkout-btn">Checkout</button>
+        </div>
     </div>
-  </section>
-
-  <section id="section-3" class="section">
-    <div class="container">
-      <img src="images/logo2.png" alt="FineAscent logo">
-    </div>
-  </section>
-
-  <!-- Section 4: Mission -->
-  <section id="mission-2" class="section">
-    <div class="container">
-      <h2>Our Mission</h2>
-      <p>
-        FineAscent creates ever-evolving products driven by excellence, always pushing beyond the boundrys. 
-        <br>
-        Shape tools that elevate lives, unlocking better versions of ourselves through continuous bursts of excellence.
-      </p>
-    </div>
-  </section>
-
-  <!-- Section 5: Call To Action -->
-  <section id="section-5" class="section cta-section">
-    <div class="container">
-      <h2>Our Product</h2>
-      <img src="images/NobelCart.png" alt="Nobel Cart">
-      <button class="btn-matte" type="button">Check it out</button>
-    </div>
-  </section>
-
-  <!-- Right-side dot navigation -->
-  <nav class="dot-nav" aria-label="Section navigation">
-    <div class="dot-rail">
-      <button class="dot" data-target="#section-1" aria-label="Section 1"></button>
-      <button class="dot" data-target="#mission" aria-label="Vision"></button>
-      <button class="dot" data-target="#section-3" aria-label="Section 3"></button>
-      <button class="dot" data-target="#mission-2" aria-label="Mission"></button>
-      <button class="dot" data-target="#section-5" aria-label="Call To Action"></button>
-      <span class="indicator" aria-hidden="true"></span>
-    </div>
-  </nav>
-
-  <script>
-  // Force refresh when navigating back/forward to this page (e.g., Chrome/Safari bfcache)
-  window.addEventListener('pageshow', function(event) {
-    // If the page was restored from the back-forward cache, reload it
-    if (event.persisted) {
-      window.location.reload();
-      return;
-    }
-    // Some browsers expose back/forward via Navigation Timing
-    try {
-      const entries = performance.getEntriesByType && performance.getEntriesByType('navigation');
-      if (entries && entries[0] && entries[0].type === 'back_forward') {
-        window.location.reload();
-      }
-    } catch (e) { /* no-op */ }
-  });
-  </script>
-
-  <script>
-  // Intersection Observer to detect when logo is in viewport (one-time reveal)
-  const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('reveal');
-      observer.unobserve(entry.target);
-    }
-  });
-}, {
-  threshold: 0.1,
-  rootMargin: '-100px'
-});
-
-// Intersection Observer for sections (toggle in/out of view)
-const sectionObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const el = entry.target;
-    if (entry.isIntersecting) {
-      el.classList.add('in-view');
-      el.classList.remove('out-of-view');
-      // Update active dot when section enters view
-      const id = el.getAttribute('id');
-      if (id && window.setActiveDotBySection) window.setActiveDotBySection(id);
-    } else {
-      el.classList.add('out-of-view');
-      el.classList.remove('in-view');
-    }
-  });
-}, { threshold: 0.6 });
-
-// Start observing the logo
-document.addEventListener('DOMContentLoaded', () => {
-  const isMobile = window.matchMedia('(max-width: 640px)').matches;
-  // Reset any transient loading state and starting position when returning to this page
-  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
-  const sec5Init = document.getElementById('section-5');
-  if (sec5Init) sec5Init.classList.remove('loading-mode');
-  // Ensure we start from Section 1, centered on desktop, top-aligned on mobile, without smooth animation
-  const root = document.documentElement;
-  const prevBehavior = root.style.scrollBehavior;
-  root.style.scrollBehavior = 'auto';
-  window.scrollTo(0, 0);
-  const firstSection = document.getElementById('section-1');
-  if (firstSection) firstSection.scrollIntoView({ block: isMobile ? 'start' : 'center' });
-  root.style.scrollBehavior = prevBehavior || '';
-  const logo = document.querySelector('.logo');
-  observer.observe(logo);
-  const mission = document.getElementById('mission');
-  if (mission) observer.observe(mission);
-  // Initialize sections to out-of-view then observe for visibility toggling
-  const sections = document.querySelectorAll('.section');
-  sections.forEach(sec => {
-    sec.classList.add('out-of-view');
-    sectionObserver.observe(sec);
-  });
-
-  // Dot navigation setup
-  const rail = document.querySelector('.dot-rail');
-  const indicator = document.querySelector('.dot-rail .indicator');
-  const dots = Array.from(document.querySelectorAll('.dot-rail .dot'));
-  const sectionList = Array.from(document.querySelectorAll('.section'));
-  let dotPositions = [];
-  let ticking = false;
-
-  function computeDotPositions() {
-    const railRect = rail.getBoundingClientRect();
-    dotPositions = dots.map(d => {
-      const r = d.getBoundingClientRect();
-      return r.top - railRect.top + r.height / 2; // center of dot within rail
-    });
-  }
-
-  function moveIndicatorTo(index) {
-    if (!indicator || dotPositions.length === 0) return;
-    const y = dotPositions[index] - (indicator.offsetHeight / 2);
-    indicator.style.transform = `translateY(${y}px)`;
-  }
-
-  function setActiveDotBySection(sectionId) {
-    const index = dots.findIndex(d => d.getAttribute('data-target') === `#${sectionId}`);
-    if (index >= 0) setActiveIndex(index);
-  }
-
-  // Expose setter to section observer scope
-  window.setActiveDotBySection = setActiveDotBySection;
-
-  function setActiveIndex(index) {
-    dots.forEach((d, i) => d.classList.toggle('active', i === index));
-    moveIndicatorTo(index);
-  }
-
-  // Toggle right-side nav visibility: hidden on Section 1, visible otherwise
-  function setNavVisibilityBySectionId(id) {
-    if (!id) return;
-    if (id === 'section-1') document.body.classList.remove('nav-visible');
-    else document.body.classList.add('nav-visible');
-  }
-
-  function activeIndexByViewportCenter() {
-    const viewportCenter = window.innerHeight / 2;
-    let bestIdx = 0;
-    let bestDist = Infinity;
-    sectionList.forEach((sec, i) => {
-      const rect = sec.getBoundingClientRect();
-      const secCenter = rect.top + rect.height / 2;
-      const dist = Math.abs(secCenter - viewportCenter);
-      if (dist < bestDist) { bestDist = dist; bestIdx = i; }
-    });
-    return bestIdx;
-  }
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const idx = activeIndexByViewportCenter();
-      setActiveIndex(idx);
-      // Update nav visibility based on section near center
-      const current = sectionList[idx];
-      if (current && current.id) setNavVisibilityBySectionId(current.id);
-      ticking = false;
-    });
-  }
-
-  // Click to scroll
-  dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-      const sel = dot.getAttribute('data-target');
-      const target = document.querySelector(sel);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
-        setActiveIndex(i);
-        if (target.id) setNavVisibilityBySectionId(target.id);
-      }
-    });
-  });
-
-  // ----- CTA: Local loading screen on Section 5, then navigate to NobelCart -----
-  const ctaBtn = document.querySelector('#section-5 .btn-matte');
-  if (ctaBtn) {
-    ctaBtn.addEventListener('click', () => {
-      if (pagingLock) return; // avoid conflicts during paging
-      const sec5 = document.getElementById('section-5');
-      if (!sec5) return;
-      // Ensure Section 5 is correctly aligned before animating
-      sec5.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
-      // Trigger local loading look
-      sec5.classList.add('loading-mode');
-      // After a short delay, navigate to the NobelCart page
-      setTimeout(() => {
-        window.location.href = 'nobelcart.html';
-      }, 700);
-    });
-  }
-
-  // ----- Discrete paging on wheel/touch -----
-  let pagingLock = false;
-  const pageDelayMs = 800; // lock duration to avoid multi-triggers
-
-  function navigateToIndex(idx) {
-    const clamped = Math.max(0, Math.min(sectionList.length - 1, idx));
-    const target = sectionList[clamped];
-    if (!target) return;
-    pagingLock = true;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // Set active dot by section ID to avoid index mismatch after reordering
-    if (target.id && window.setActiveDotBySection) {
-      window.setActiveDotBySection(target.id);
-    } else {
-      setActiveIndex(clamped);
-    }
-    setTimeout(() => { pagingLock = false; }, pageDelayMs);
-  }
-
-  function pageNext() { navigateToIndex(activeIndexByViewportCenter() + 1); }
-  function pagePrev() { navigateToIndex(activeIndexByViewportCenter() - 1); }
-
-  // Desktop-only discrete paging: on mobile, rely on native scroll-snap for full-section snaps
-  if (!isMobile) {
-    // Wheel: treat scroll like clicking next/prev dot
-    window.addEventListener('wheel', (e) => {
-      // prevent native scrolling
-      e.preventDefault();
-      if (pagingLock) return;
-      const dy = e.deltaY;
-      if (dy > 15) pageNext();
-      else if (dy < -15) pagePrev();
-    }, { passive: false });
-
-    // Touch: vertical swipe to page
-    let touchStartY = null;
-    window.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    window.addEventListener('touchmove', (e) => {
-      if (touchStartY == null) return;
-      const y = e.touches[0].clientY;
-      const dy = y - touchStartY;
-      // prevent native scroll while paging
-      e.preventDefault();
-      if (pagingLock) return;
-      const threshold = 24; // pixels
-      if (dy <= -threshold) { pageNext(); touchStartY = null; }
-      else if (dy >= threshold) { pagePrev(); touchStartY = null; }
-    }, { passive: false });
-    window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
-  }
-
-  // Initialize indicator after layout
-  requestAnimationFrame(() => {
-    computeDotPositions();
-    // Set indicator to current visible section (fallback to first)
-    const idx = activeIndexByViewportCenter();
-    setActiveIndex(idx >= 0 ? idx : 0);
-    const current = sectionList[idx];
-    setNavVisibilityBySectionId(current && current.id ? current.id : 'section-1');
-  });
-
-  // Recompute on resize
-  window.addEventListener('resize', () => {
-    computeDotPositions();
-    const idx = activeIndexByViewportCenter();
-    setActiveIndex(idx >= 0 ? idx : 0);
-  });
-
-  // Sync on scroll to ensure correct active dot even during momentum scrolling
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  // Recompute when rail or dots change size (fonts, zoom)
-  if ('ResizeObserver' in window) {
-    const ro = new ResizeObserver(() => {
-      computeDotPositions();
-      const idx = activeIndexByViewportCenter();
-      setActiveIndex(idx >= 0 ? idx : 0);
-    });
-    ro.observe(rail);
-    dots.forEach(d => ro.observe(d));
-  }
-});
-</script>
-</body>
-
-</html>
+    <script src="include-header.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="site.js"></script>
+  </body>
+  </html>
