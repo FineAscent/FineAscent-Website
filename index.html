@@ -50,10 +50,13 @@
   <section id="section-5" class="section cta-section">
     <div class="container">
       <h2>Our Product</h2>
-      <img src="images/NobelCart.png" alt="Nobel Cart">
+      <img src="images/NobleCart.png" alt="Nobel Cart">
       <button class="btn-matte" type="button">Check it out</button>
     </div>
   </section>
+
+  <!-- Privacy link (bottom-right, text only) -->
+  <a class="privacy-link" href="noblecart/privacy-policy/" aria-label="Privacy Policy">Privacy</a>
 
   <!-- Right-side dot navigation -->
   <nav class="dot-nav" aria-label="Section navigation">
@@ -223,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ----- CTA: Local loading screen on Section 5, then navigate to NobelCart -----
+  // ----- CTA: Local loading screen on Section 5, then navigate to NobleCart -----
   const ctaBtn = document.querySelector('#section-5 .btn-matte');
   if (ctaBtn) {
     ctaBtn.addEventListener('click', () => {
@@ -234,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sec5.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
       // Trigger local loading look
       sec5.classList.add('loading-mode');
-      // After a short delay, navigate to the NobelCart page
+      // After a short delay, navigate to the NobleCart page
       setTimeout(() => {
         window.location.href = 'nobelcart.html';
       }, 700);

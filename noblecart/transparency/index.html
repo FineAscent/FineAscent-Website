@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Transparency Report • NobleCart • FineAscent</title>
+  <meta name="description" content="NobleCart Transparency Report — annual disclosure of government and legal requests. Report coming soon.">
+  <link rel="stylesheet" href="../../style.css">
+  <style>
+    /* ===== Transparency page: minimal placeholder, dark theme ===== */
+    body.inverted.doc-page {
+      background: #000;
+      color: #f5f5f5;
+      min-height: auto;
+      scroll-snap-type: none;
+    }
+    body.inverted.doc-page .section {
+      background: #000;
+      color: #f5f5f5;
+      scroll-snap-align: none;
+      scroll-snap-stop: normal;
+      min-height: 100vh;
+      padding: 0;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .tp-shell {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: clamp(28px, 6vh, 72px) clamp(20px, 5vw, 48px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar: back links */
+    .tp-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px 22px;
+      margin-bottom: clamp(28px, 6vh, 56px);
+      font-size: 14px;
+      letter-spacing: 0.2px;
+    }
+    .tp-topbar a {
+      color: #cfcfcf;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
+      padding-bottom: 2px;
+      transition: color 200ms ease, border-color 200ms ease;
+    }
+    .tp-topbar a:hover { color: #fff; border-color: #fff; }
+    .tp-topbar .tp-brand {
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.4px;
+      border: none;
+      padding: 0;
+    }
+    .tp-topbar .tp-sep { color: rgba(255,255,255,0.3); }
+
+    /* Centered hero content */
+    .tp-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 18px;
+      padding: clamp(40px, 10vh, 80px) 0;
+    }
+    .tp-eyebrow {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+    .tp-title {
+      margin: 0;
+      font-size: clamp(30px, 6vw, 52px);
+      line-height: 1.1;
+      letter-spacing: 0.2px;
+      color: #fff;
+    }
+    .tp-subtitle {
+      margin: 0;
+      max-width: 560px;
+      font-size: clamp(15px, 2.6vw, 19px);
+      line-height: 1.6;
+      color: rgba(255,255,255,0.75);
+    }
+    .tp-status {
+      margin: 6px 0 0;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      color: rgba(255,255,255,0.5);
+    }
+    .tp-cta {
+      margin-top: 14px;
+    }
+    .tp-link {
+      display: inline-block;
+      padding: 14px 26px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #111;
+      text-decoration: none;
+      font-size: clamp(15px, 2.2vw, 17px);
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      transition: background 220ms ease, transform 160ms ease, box-shadow 220ms ease;
+    }
+    .tp-link:hover {
+      background: #f5f5f5;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.22);
+    }
+    .tp-link:active { transform: translateY(1px); }
+
+    /* Footer */
+    .tp-footer {
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+      text-align: center;
+    }
+    .tp-footer a {
+      color: rgba(255,255,255,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      text-decoration: none;
+    }
+    .tp-footer a:hover { color: #fff; border-color: #fff; }
+
+    /* Hide the global dot nav on this page */
+    body.inverted.doc-page .dot-nav { display: none; }
+  </style>
+</head>
+<body class="inverted doc-page">
+  <section class="section">
+    <div class="tp-shell">
+
+      <!-- Top bar with back links -->
+      <nav class="tp-topbar" aria-label="Breadcrumb">
+        <a class="tp-brand" href="../../index.html">FineAscent</a>
+        <span class="tp-sep" aria-hidden="true">/</span>
+        <a href="../../nobelcart.html">NobleCart</a>
+        <span class="tp-sep" aria-hidden="true">/</span>
+        <a href="./" aria-current="page">Transparency</a>
+      </nav>
+
+      <!-- Centered hero -->
+      <main class="tp-hero">
+        <p class="tp-eyebrow">NobleCart &middot; Transparency</p>
+        <h1 class="tp-title">Transparency Report</h1>
+        <p class="tp-subtitle">
+          Each year we disclose the number and type of government and legal requests we receive and how we responded.
+        </p>
+        <p class="tp-status">Nothing to report yet &mdash; the first annual report will be published here.</p>
+        <div class="tp-cta">
+          <a class="tp-link" href="../privacy-policy/">Read our Privacy Policy</a>
+        </div>
+      </main>
+
+      <footer class="tp-footer">
+        <p>
+          <a href="../../nobelcart.html">&larr; Back to NobleCart</a>
+          &nbsp;&middot;&nbsp;
+          <a href="../../index.html">FineAscent home</a>
+        </p>
+        <p>FineAscent LLC.</p>
+      </footer>
+
+    </div>
+  </section>
+</body>
+</html>

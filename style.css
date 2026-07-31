@@ -1,5 +1,32 @@
 :root { color-scheme: light; }
 
+/* ===== Privacy link (bottom-right, text only) ===== */
+.privacy-link {
+  position: fixed;
+  right: calc(14px + env(safe-area-inset-right, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  font: 500 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 0.02em;
+  color: rgba(0,0,0,0.55);
+  text-decoration: none;
+  padding: 6px 4px;
+  background: transparent;
+  border: none;
+  transition: color 180ms ease, opacity 180ms ease;
+}
+.privacy-link:hover { color: rgba(0,0,0,0.9); }
+.privacy-link:active { color: rgba(0,0,0,0.7); }
+.privacy-link:focus-visible { outline: 2px solid rgba(0,0,0,0.4); outline-offset: 2px; border-radius: 2px; }
+/* Inverted (dark) theme: keep readable on dark backgrounds */
+body.inverted .privacy-link { color: rgba(255,255,255,0.6); }
+body.inverted .privacy-link:hover { color: rgba(255,255,255,0.95); }
+body.inverted .privacy-link:focus-visible { outline-color: rgba(255,255,255,0.5); }
+/* On very small screens, keep it visible but compact */
+@media (max-width: 640px) {
+  .privacy-link { font-size: 12px; right: calc(10px + env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+}
+
 /* ===== Section 5: CTA and Matte Button ===== */
 .cta-section {
   /* mirror centered layout */
@@ -441,7 +468,7 @@ html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
   pointer-events: auto; /* enable clicks on children */
 }
 
-/* NobelCart only (body has .inverted): hide nav over Section 1 then reveal after */
+/* NobleCart only (body has .inverted): hide nav over Section 1 then reveal after */
 body.inverted .dot-nav { opacity: 1; transition: opacity 300ms ease; }
 body.inverted:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 /* Index page: hide nav when body does not have .nav-visible */
@@ -490,7 +517,7 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   transform: none;
 }
 
-/* ===== In-section Side Rail (NobelCart page) ===== */
+/* ===== In-section Side Rail (NobleCart page) ===== */
 .nobelcart-section {
   min-height: 100vh;
   display: grid;
@@ -736,7 +763,7 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   #section-3,
   .cta-section { min-height: 100svh; }
 
-  /* NobelCart Section 2 (#newvideo): show as a centered rectangle card instead of full-screen */
+  /* NobleCart Section 2 (#newvideo): show as a centered rectangle card instead of full-screen */
   #newvideo {
     display: flex;
     align-items: center;
@@ -780,7 +807,7 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   /* Hide the full-screen fade overlay for the boxed layout on mobile */
   #newvideo .video-fade { display: none; }
 
-  /* NobelCart Section 4 (#nc-4): start full-screen, then shrink to a rectangle under the text */
+  /* NobleCart Section 4 (#nc-4): start full-screen, then shrink to a rectangle under the text */
   /* Keep full-screen defaults from .video-section; only adjust shrink state and typography */
   #nc-4 .nc4-content { padding: clamp(24px, 28vh, 80px) 20px 0; }
   #nc-4 #nc4-title { font-size: clamp(18px, 6.2vw, 26px); }
