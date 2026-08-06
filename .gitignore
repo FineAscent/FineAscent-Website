@@ -15,3 +15,6 @@ Thumbs.db
 dist/
 build/
 .cache/
+
+# Supabase (contains environment variables and service keys)
+supabase/

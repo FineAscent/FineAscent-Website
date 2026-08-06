@@ -274,11 +274,7 @@
 
   <script>
     // ===== Delete account request handling =====
-    // Submissions are intended to be appended to delete-requests.csv on the backend.
-    // NOTE: GitHub Pages is static and cannot run server code, so this form cannot
-    // automatically write to the CSV file without a backend (e.g. Netlify/Vercel
-    // Functions). For now it validates input and shows a success message locally.
-    function submitDelete(event) {
+    async function submitDelete(event) {
       event.preventDefault();
       const msg = document.getElementById('da-msg');
       const btn = document.getElementById('da-submit');
@@ -290,17 +286,28 @@
       btn.disabled = true;
       btn.textContent = "Submitting…";
 
-      // No backend on a static site — record locally and confirm to the user.
-      // To enable automatic CSV writes, deploy with Netlify/Vercel and add a
-      // serverless function that appends {Timestamp, Email, Reason} to
-      // delete-requests.csv.
-      setTimeout(() => {
+      try {
+        const response = await fetch('https://pkofxkcbdyqcunwjrnnx.supabase.co/functions/v1/delete-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, reason })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || 'Submission failed');
+
         msg.textContent = "Your request has been submitted. We'll confirm by email within 30 days.";
         msg.classList.add('show', 'ok');
+        document.getElementById('deleteAccountForm').reset();
+      } catch (err) {
+        msg.textContent = "Something went wrong. Please try again.";
+        msg.classList.add('show', 'err');
+        console.error('Submission error:', err);
+      } finally {
         btn.disabled = false;
         btn.textContent = "Submit request";
-        document.getElementById('deleteAccountForm').reset();
-      }, 600);
+      }
 
       return false;
     }
