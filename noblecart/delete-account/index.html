@@ -289,7 +289,10 @@
       try {
         const response = await fetch('https://pkofxkcbdyqcunwjrnnx.supabase.co/functions/v1/delete-request', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb2Z4a2NiZHlxY3Vud2pybm54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1NzU0NTksImV4cCI6MjA3MTE1MTQ1OX0.OXyJ9EOJRo4YHf7TKVoeWMFPr9B9djrq9fciBSm0i0U'
+          },
           body: JSON.stringify({ email, reason })
         });
 
