@@ -263,9 +263,17 @@
             button.hidden = true;
             render("Account deleted", "Your NobleCart account and its data have been permanently removed. You will not receive any further email from us.");
           } catch (err) {
+            console.error("Deletion failed", err);
             button.disabled = false;
             button.textContent = "Permanently delete my account";
-            render("Something went wrong", "We could not complete the deletion. Please request a new link and try again.", true);
+            const detail = err instanceof Error && err.message ? err.message : "";
+            render(
+              "Something went wrong",
+              detail
+                ? `We could not complete the deletion (${detail}). Please request a new link and try again.`
+                : "We could not complete the deletion. Please request a new link and try again.",
+              true,
+            );
           } finally {
             try { await sb.auth.signOut(); } catch (_) {}
           }
