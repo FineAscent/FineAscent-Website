@@ -99,6 +99,10 @@
       color: rgba(255,255,255,0.82);
     }
     .tp-notice strong { color: #fff; font-weight: 600; }
+    .tp-notice--info {
+      border-left-color: rgba(120,180,255,0.7);
+      background: rgba(120,180,255,0.05);
+    }
 
     /* Form */
     .da-form {
@@ -169,6 +173,7 @@
 
     /* Success / error message */
     .da-msg {
+      margin-top: 20px;
       font-size: 14px;
       line-height: 1.5;
       padding: 12px 14px;
@@ -229,36 +234,49 @@
         <p class="tp-eyebrow">NobleCart &middot; Account</p>
         <h1 class="tp-title">Delete Your Account</h1>
         <p class="tp-subtitle">
-          Request permanent deletion of your NobleCart account and associated data. We'll process your request and confirm by email.
+          Request permanent deletion of your NobleCart account and associated data. We'll email you a confirmation link, and your account is erased as soon as you click it.
         </p>
       </header>
 
       <!-- Warning notice -->
       <div class="tp-notice">
         <p>
-          <strong>This action is irreversible.</strong> Once your account is deleted, your purchase history, saved items, and preferences cannot be recovered. Deletion requests are typically processed within 30 days.
+          <strong>This action is irreversible.</strong> Once confirmed, your account, purchase history, saved items, and preferences are permanently erased and cannot be recovered.
         </p>
       </div>
 
-      <!-- Form: POSTs to a Google Form (hidden iframe technique to avoid redirect) -->
+      <div class="tp-notice tp-notice--info">
+        <p>
+          <strong>Why we email you a link.</strong> An email address on its own isn't proof of identity, so entering one here never deletes anything. We send a one-time confirmation link to that address instead, and only someone who can open that inbox can complete the deletion. The link expires in one hour.
+        </p>
+      </div>
+
+      <!-- Emails a one-time confirmation link; the deletion itself happens on confirm/ -->
       <form class="da-form" id="deleteAccountForm" onsubmit="return submitDelete(event)">
         <div class="da-field">
           <label class="da-label" for="da-email">Email address<span class="da-req">*</span></label>
           <input class="da-input" type="email" id="da-email" name="email"
                  placeholder="you@example.com" required autocomplete="email">
-          <p class="da-hint">The email associated with your NobleCart account. We'll send confirmation here.</p>
+          <p class="da-hint">The email associated with your NobleCart account. We'll send the confirmation link here.</p>
         </div>
 
         <div class="da-field">
           <label class="da-label" for="da-reason">Reason<span class="da-req">*</span></label>
-          <textarea class="da-textarea" id="da-reason" name="reason"
-                    placeholder="Tell us why you'd like to delete your account (optional but helpful)" required></textarea>
+          <textarea class="da-textarea" id="da-reason" name="reason" maxlength="2000"
+                    placeholder="Tell us why you'd like to delete your account" required></textarea>
           <p class="da-hint">Any details you share help us improve NobleCart. This field is required.</p>
         </div>
 
-        <button class="da-submit" type="submit" id="da-submit">Submit request</button>
-        <div class="da-msg" id="da-msg" role="status" aria-live="polite"></div>
+        <!-- Bot protection. To enable: set TURNSTILE_SECRET on the function, put
+             your site key below, and uncomment this div and the Turnstile script
+             tag near the bottom of the page.
+        <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-theme="dark"></div>
+        -->
+
+        <button class="da-submit" type="submit" id="da-submit">Email me a confirmation link</button>
       </form>
+
+      <div class="da-msg" id="da-msg" role="status" aria-live="polite"></div>
 
       <!-- Footer -->
       <footer class="tp-footer">
@@ -272,44 +290,62 @@
     </div>
   </section>
 
+  <!-- Bot protection: uncomment along with the widget div above to enable.
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  -->
+
   <script>
-    // ===== Delete account request handling =====
+    // Only the project URL and the anon key belong in the browser. The anon key
+    // is public by design; the service role key must never appear here.
+    const SUPABASE_URL = 'https://pkofxkcbdyqcunwjrnnx.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb2Z4a2NiZHlxY3Vud2pybm54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1NzU0NTksImV4cCI6MjA3MTE1MTQ1OX0.OXyJ9EOJRo4YHf7TKVoeWMFPr9B9djrq9fciBSm0i0U';
+
+    const SUBMIT_LABEL = 'Email me a confirmation link';
+
+    // Sends a one-time confirmation link. Deletes nothing: the account is only
+    // erased once the recipient opens that link and confirms.
     async function submitDelete(event) {
       event.preventDefault();
+      const form = document.getElementById('deleteAccountForm');
       const msg = document.getElementById('da-msg');
       const btn = document.getElementById('da-submit');
       const email = document.getElementById('da-email').value.trim();
       const reason = document.getElementById('da-reason').value.trim();
 
       msg.classList.remove('show', 'ok', 'err');
-
       btn.disabled = true;
-      btn.textContent = "Submitting…";
+      btn.textContent = 'Sending confirmation…';
 
       try {
-        const response = await fetch('https://pkofxkcbdyqcunwjrnnx.supabase.co/functions/v1/delete-request', {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/request-account-deletion`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb2Z4a2NiZHlxY3Vud2pybm54Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1NzU0NTksImV4cCI6MjA3MTE1MTQ1OX0.OXyJ9EOJRo4YHf7TKVoeWMFPr9B9djrq9fciBSm0i0U'
+            'apikey': SUPABASE_ANON_KEY
           },
-          body: JSON.stringify({ email, reason })
+          body: JSON.stringify({
+            email,
+            reason,
+            captchaToken: window.turnstile?.getResponse?.()
+          })
         });
 
         const data = await response.json();
 
-        if (!response.ok) throw new Error(data.error || 'Submission failed');
+        if (!response.ok) throw new Error(data.error || 'Request failed');
 
-        msg.textContent = "Your request has been submitted. We'll confirm by email within 30 days.";
+        // The reply is identical whether or not the address has an account, so
+        // this page cannot be used to test which emails are registered.
+        form.reset();
+        form.hidden = true;
+        msg.textContent = data.message || "If an account exists for that address, we've emailed a confirmation link. The account is only deleted once you click it.";
         msg.classList.add('show', 'ok');
-        document.getElementById('deleteAccountForm').reset();
       } catch (err) {
-        msg.textContent = "Something went wrong. Please try again.";
+        msg.textContent = err.message || 'Something went wrong. Please try again.';
         msg.classList.add('show', 'err');
-        console.error('Submission error:', err);
-      } finally {
         btn.disabled = false;
-        btn.textContent = "Submit request";
+        btn.textContent = SUBMIT_LABEL;
+        window.turnstile?.reset?.();
       }
 
       return false;
