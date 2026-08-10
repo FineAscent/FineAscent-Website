@@ -332,6 +332,10 @@
 
         const data = await response.json();
 
+        if (data.code === 'DAILY_LIMIT' || response.status === 429) {
+          throw new Error(data.error || 'Please try again tomorrow.');
+        }
+
         if (!response.ok) throw new Error(data.error || 'Request failed');
 
         // The reply is identical whether or not the address has an account, so
