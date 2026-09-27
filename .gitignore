@@ -8,6 +8,11 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Raw media exports (too large for GitHub; ship compressed versions only)
+*.mov
+images/no-more-frame-4x.png
+*.bak
+
 # Logs
 *.log
 

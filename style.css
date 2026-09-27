@@ -265,6 +265,14 @@ img.logo.reveal {
   object-position: center; /* keep center focus */
 }
 
+/* Section 2: fill the viewport (cover top and bottom); on tall screens
+   a little of the left/right is cropped, not scaled. */
+#newvideo .hero-video {
+  object-fit: cover;
+  object-position: center;
+  background: #000;
+}
+
 /* Black overlay that fades out when video starts */
 .video-section .video-fade {
   position: absolute;
@@ -276,6 +284,19 @@ img.logo.reveal {
 }
 .video-section.ready .video-fade {
   opacity: 0;
+}
+/* Section 2 → 3 handoff: smooth fade out, then fade in */
+#newvideo.fade-out {
+  opacity: 0;
+  transition: opacity 1400ms ease-in-out;
+  pointer-events: none;
+}
+#nc-3.crossfade-prep {
+  opacity: 0;
+}
+#nc-3.crossfade-in {
+  opacity: 1;
+  transition: opacity 1400ms ease-in-out;
 }
 
 /* ===== Section #nc-4: shrink video under heading after reveal ===== */
@@ -466,6 +487,7 @@ html::-webkit-scrollbar {       /* Chrome/Safari/Edge */
   align-items: center;
   gap: 18px;
   pointer-events: auto; /* enable clicks on children */
+  transition: padding 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* NobleCart only (body has .inverted): hide nav over Section 1 then reveal after */
@@ -481,10 +503,30 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   border: none;
   background: rgba(0,0,0,0.22);
   cursor: pointer;
-  transition: transform 220ms ease, background 220ms ease, box-shadow 220ms ease;
+  flex: 0 0 auto;
   outline: none;
   position: relative;
   z-index: 1;
+  overflow: hidden;
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms ease,
+    box-shadow 220ms ease,
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Collapse one dot in place — neighbors ease together, no remount/refresh */
+.dot-rail .dot.dot-exit {
+  opacity: 0;
+  transform: scale(0.35);
+  width: 0;
+  height: 0;
+  margin: -9px 0; /* eat half the 18px gap above + below */
+  pointer-events: none;
+  box-shadow: none;
+  background: transparent;
 }
 .dot-rail .dot:hover:not(.active),
 .dot-rail .dot:focus-visible:not(.active) {
@@ -763,49 +805,8 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   #section-3,
   .cta-section { min-height: 100svh; }
 
-  /* NobleCart Section 2 (#newvideo): show as a centered rectangle card instead of full-screen */
-  #newvideo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 0; /* breathing room top/bottom */
-    background: #000; /* maintain dark surround */
-    position: relative; /* for background blur layer */
-  }
-  /* Full-bleed blurred background video, sits behind the rectangle */
-  #newvideo .video-bg-blur {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    z-index: 0;
-  }
-  #newvideo .video-bg-blur .bg-video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: blur(18px) brightness(0.6); /* soften and darken */
-    transform: scale(1.1); /* hide blur edges */
-  }
-  #newvideo .video-bg {
-    position: relative;   /* override absolute full-bleed */
-    inset: auto;
-    width: clamp(260px, 92vw, 720px);
-    aspect-ratio: 16 / 9; /* rectangular video */
-    border-radius: 16px;
-    overflow: hidden;     /* clip video corners */
-    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-    z-index: 1;           /* above blurred layer */
-  }
-  #newvideo .hero-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;    /* fill the rectangle without distortion */
-    display: block;
-  }
-  /* Hide the full-screen fade overlay for the boxed layout on mobile */
-  #newvideo .video-fade { display: none; }
+  /* NobleCart Section 2: keep full-bleed cover on phones so top and bottom fill */
+  #newvideo .hero-video { object-fit: cover; object-position: center; }
 
   /* NobleCart Section 4 (#nc-4): start full-screen, then shrink to a rectangle under the text */
   /* Keep full-screen defaults from .video-section; only adjust shrink state and typography */

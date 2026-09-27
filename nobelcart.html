@@ -4,6 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NobleCart • FineAscent</title>
+  <meta name="description" content="NobleCart by FineAscent: checkout instantly with no waiting, a Table UI that makes checkout easy, and an app to manage your purchases in one place.">
+  <link rel="canonical" href="https://fineascent.org/nobelcart.html">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FineAscent">
+  <meta property="og:title" content="NobleCart • FineAscent">
+  <meta property="og:description" content="Checkout instantly, no waiting—fast and seamless shopping experience.">
+  <meta property="og:url" content="https://fineascent.org/nobelcart.html">
+  <meta property="og:image" content="https://fineascent.org/images/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preload" as="image" href="images/NobleCart.webp" fetchpriority="high">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="inverted">
@@ -11,7 +26,7 @@
   <section id="nc-1" class="section cta-section section-dark">
     <div class="container">
       <h2>Our Product</h2>
-      <img src="images/NobleCart.png" alt="Nobel Cart">
+      <img src="images/NobleCart.webp" alt="NobleCart" width="2030" height="346" fetchpriority="high">
       <button class="btn-matte" type="button">Check it out</button>
     </div>
   </section>
@@ -20,15 +35,10 @@
   <!-- Section: Full video section -->
   <section class="section video-section" id="newvideo">
     <div class="video-bg">
-      <video class="hero-video" muted playsinline preload="metadata" poster="images/NobleCart.png">
-        <source src="images/newvideo2.mp4" type="video/mp4">
-        <!-- Optional WebM for size savings; add if available
-        <source src="images/newvideo.webm" type="video/webm"> -->
-        Your browser does not support the video tag.
+      <video class="hero-video" muted playsinline preload="auto">
+        <source src="images/Timelinenomore.mp4" type="video/mp4">
       </video>
     </div>
-    <!-- Black overlay that fades out from opacity 1 to 0 when video starts -->
-    <div class="video-fade" aria-hidden="true"></div>
   </section>
 
   <!-- Section 3: New section -->
@@ -46,7 +56,7 @@
        Making checkout easy.</h2>
     </div>
     <div class="video-bg">
-      <video class="hero-video" muted playsinline preload="metadata" poster="images/NobleCart.png">
+      <video class="hero-video" muted playsinline preload="metadata" poster="images/NobleCart.webp">
         <source src="images/e8.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -63,7 +73,7 @@
           Allowing you to manage NobleCart purchases from one place.</h2>
       </div>
       <div class="nc5-media">
-        <img class="nc5-phone" src="images/unnamed-23.jpg" alt="NobleCart mobile app screenshot">
+        <img class="nc5-phone" src="images/unnamed-23.webp" alt="NobleCart mobile app screenshot" width="1080" height="2240" loading="lazy" decoding="async">
       </div>
     </div>
   </section>
@@ -73,7 +83,7 @@
     <div class="content">
       <h2 class="nc6-title">Development in progress</h2>
       <p class="nc6-subtitle">Trying to make NobleCart more than excellence.</p>
-      <img class="nc6-logo" src="images/cartlogo.gif" alt="NobleCart logo">
+      <img class="nc6-logo" src="images/cartlogo.gif" alt="NobleCart logo" width="1920" height="1080" loading="lazy" decoding="async">
     </div>
   </section>
 
@@ -84,10 +94,11 @@
   <nav class="dot-nav" aria-label="Section navigation">
     <div class="dot-rail">
       <button class="dot" data-target="#nc-1" aria-label="Section 1"></button>
-      <button class="dot" data-target="#nc-2" aria-label="Section 2"></button>
+      <button class="dot" data-target="#newvideo" aria-label="Section 2"></button>
       <button class="dot" data-target="#nc-3" aria-label="Section 3"></button>
       <button class="dot" data-target="#nc-4" aria-label="Section 4"></button>
       <button class="dot" data-target="#nc-5" aria-label="Section 5"></button>
+      <button class="dot" data-target="#nc-6" aria-label="Section 6"></button>
       <span class="indicator" aria-hidden="true"></span>
     </div>
   </nav>
@@ -124,54 +135,213 @@
           }, 600); // match CSS transition duration
         }, 2000);
       }
-      // Make the CTA button scroll to Section 2 (#newvideo)
+      // Make the CTA button scroll to Section 2, or reset the page to replay after it has played
       const ctaBtn = document.querySelector('#nc-1 .btn-matte');
       if (ctaBtn) {
         ctaBtn.addEventListener('click', () => {
-          const target = document.getElementById('newvideo');
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
-          const vid = document.querySelector('#newvideo .hero-video');
-          if (vid && vid.ended) {
-            try { vid.currentTime = 0; vid.play(); } catch (e) {}
+          const stillThere = document.getElementById('newvideo');
+          if (!stillThere || section2PlayedThisLoad) {
+            location.reload();
+            return;
           }
+          stillThere.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
         });
       }
     });
     // Right-side navigation identical behavior to index (discrete paging)
     const rail = document.querySelector('.dot-rail');
     const indicator = document.querySelector('.dot-rail .indicator');
-    const dots = Array.from(document.querySelectorAll('.dot-rail .dot'));
-    const sectionList = Array.from(document.querySelectorAll('.section'));
+    let dots = Array.from(document.querySelectorAll('.dot-rail .dot'));
+    let sectionList = Array.from(document.querySelectorAll('.section'));
     let dotPositions = [];
     let pagingLock = false;
     let autoIntroPlaying = false;
+    let section2ScrollLocked = false; // lock only during first-run section 2 sequence
+    let section2PlayedThisLoad = false; // after first run, never lock/play again until reload
     const pageDelayMs = 800;
 
-    // Fade overlay for #newvideo: trigger only when section becomes active/in view
+    function lockSection2Scroll(section) {
+      section2ScrollLocked = true;
+      pagingLock = true;
+      document.body.style.overflow = 'hidden';
+      try {
+        const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        section.scrollIntoView({ behavior: 'auto', block: isMobile ? 'start' : 'center' });
+      } catch (e) {}
+    }
+
+    function unlockSection2Scroll() {
+      section2ScrollLocked = false;
+      pagingLock = false;
+      document.body.style.overflow = '';
+    }
+
+    function syncDotsToSections() {
+      dots = Array.from(document.querySelectorAll('.dot-rail .dot:not(.dot-exit)'));
+      sectionList = Array.from(document.querySelectorAll('.section'));
+      // Keep each remaining dot's existing target — only hide extras if counts differ
+      dots.forEach((dot, i) => {
+        const sec = sectionList[i];
+        if (sec) {
+          const want = '#' + sec.id;
+          if (dot.getAttribute('data-target') !== want) {
+            dot.setAttribute('data-target', want);
+          }
+          dot.setAttribute('aria-label', 'Section ' + (i + 1));
+          dot.hidden = false;
+          dot.style.display = '';
+        } else {
+          dot.hidden = true;
+          dot.style.display = 'none';
+        }
+      });
+      computeDotPositions();
+    }
+
+    function smoothSidebarAfterSection2Removed(nextId) {
+      return new Promise((resolve) => {
+        const liveDots = Array.from(document.querySelectorAll('.dot-rail .dot'));
+        const exitDot = liveDots.find(d => d.getAttribute('data-target') === '#newvideo');
+        const nextDot = liveDots.find(d => d.getAttribute('data-target') === '#' + nextId);
+
+        // Softly hand active state to the next section's existing dot (no remap)
+        liveDots.forEach(d => d.classList.remove('active'));
+        if (nextDot) nextDot.classList.add('active');
+        setNavVisibilityBySectionId(nextId);
+
+        const finish = () => {
+          if (exitDot && exitDot.parentNode) exitDot.remove();
+          dots = Array.from(document.querySelectorAll('.dot-rail .dot'));
+          sectionList = Array.from(document.querySelectorAll('.section'));
+          dots.forEach((dot, i) => {
+            dot.setAttribute('aria-label', 'Section ' + (i + 1));
+          });
+          computeDotPositions();
+          const idx = Math.max(0, dots.findIndex(d => d.getAttribute('data-target') === '#' + nextId));
+          setActiveIndex(idx);
+          resolve();
+        };
+
+        if (!exitDot) {
+          syncDotsToSections();
+          finish();
+          return;
+        }
+
+        // Animate collapse in place; other dots keep identity and ease together
+        requestAnimationFrame(() => {
+          exitDot.classList.add('dot-exit');
+        });
+
+        let done = false;
+        const doneOnce = () => {
+          if (done) return;
+          done = true;
+          finish();
+        };
+        exitDot.addEventListener('transitionend', (e) => {
+          if (e.target !== exitDot) return;
+          if (!['opacity', 'height', 'margin-top', 'transform'].includes(e.propertyName)) return;
+          doneOnce();
+        });
+        setTimeout(doneOnce, 580);
+      });
+    }
+
+    function removeNewvideoAfterPlay() {
+      const section = document.getElementById('newvideo');
+      if (!section || section.dataset.handingOff === '1') return;
+      section.dataset.handingOff = '1';
+      const next = document.getElementById('nc-3');
+      const isMobile = window.matchMedia('(max-width: 640px)').matches;
+      const fadeOutMs = 1400;
+      const holdDelayMs = 900;
+
+      setTimeout(() => {
+        if (next) next.classList.add('crossfade-prep');
+        section.classList.add('fade-out');
+        let handedOff = false;
+
+        const afterOut = async () => {
+          if (handedOff) return;
+          handedOff = true;
+          try { sectionObserver.unobserve(section); } catch (e) {}
+          if (section.parentNode) section.remove();
+
+          await smoothSidebarAfterSection2Removed('nc-3');
+          sectionList.forEach(sec => {
+            try { sectionObserver.observe(sec); } catch (e) {}
+          });
+
+          if (next) {
+            next.scrollIntoView({ behavior: 'auto', block: isMobile ? 'start' : 'center' });
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                next.classList.remove('crossfade-prep');
+                next.classList.add('crossfade-in');
+                unlockSection2Scroll();
+              });
+            });
+          } else {
+            unlockSection2Scroll();
+          }
+        };
+
+        const onOutEnd = (e) => {
+          if (e.target !== section || e.propertyName !== 'opacity') return;
+          section.removeEventListener('transitionend', onOutEnd);
+          afterOut();
+        };
+        section.addEventListener('transitionend', onOutEnd);
+        setTimeout(afterOut, fadeOutMs + 120);
+      }, holdDelayMs);
+    }
+
+    // First page-load visit to #newvideo: lock scroll, play the video once, then hand off → #nc-3.
+    // Later visits this load (scroll up/down) do nothing — only a full reload re-arms it.
     (function setupVideoRevealOnActive(){
       const section = document.getElementById('newvideo');
-      const vid = section ? section.querySelector('.hero-video') : null;
-      if (!section || !vid) return;
+      if (!section) {
+        syncDotsToSections();
+        return;
+      }
+      const vid = section.querySelector('video');
+      const startDelayMs = 100;
+      let started = false;
+      let finishing = false;
       try { vid.pause(); vid.currentTime = 0; } catch (e) {}
-      const reveal = () => section.classList.add('ready');
-      let playedOnce = false;
-      const onEnter = async () => {
-        if (playedOnce) return;
-        try { await vid.play(); } catch (e) { /* autoplay policies may block */ }
+      const finish = () => {
+        if (finishing) return;
+        finishing = true;
+        removeNewvideoAfterPlay();
       };
-      vid.addEventListener('playing', () => {
-        if (!playedOnce) {
-          reveal();
-          playedOnce = true;
-        }
-      }, { once: true });
+      const onEnter = () => {
+        if (started || section2PlayedThisLoad) return;
+        started = true;
+        section2PlayedThisLoad = true;
+        lockSection2Scroll(section);
+        setActiveIndex(sectionList.findIndex(s => s.id === 'newvideo'));
+        setNavVisibilityBySectionId('newvideo');
+        section.classList.add('ready');
+        vid.addEventListener('ended', finish, { once: true });
+        setTimeout(() => {
+          // Autoplay can be refused (e.g. iOS Low Power Mode); hold on the first frame, then continue
+          vid.play().catch(() => setTimeout(finish, 1500));
+        }, startDelayMs);
+        // Never leave scroll locked if the video stalls
+        const duration = isFinite(vid.duration) && vid.duration > 0 ? vid.duration : 8;
+        setTimeout(finish, startDelayMs + duration * 1000 + 3000);
+      };
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          if (!entry.isIntersecting) return;
+          if (section2PlayedThisLoad) return; // scrolled away and back — no lock, no replay
+          if (entry.intersectionRatio >= 0.45) {
             onEnter();
+            io.unobserve(section);
           }
         });
-      }, { threshold: [0, 0.6, 1] });
+      }, { threshold: [0, 0.45, 0.6, 1] });
       io.observe(section);
     })();
 
@@ -185,9 +355,11 @@
       let playedOnce = false;
       const onEnter = async () => {
         if (playedOnce) return;
-        try { await vid.play(); } catch (e) {}
+        // Autoplay can be refused (e.g. iOS Low Power Mode); still run the reveal on the poster
+        try { await vid.play(); } catch (e) { runSequence(); }
       };
-      vid.addEventListener('playing', () => {
+      vid.addEventListener('playing', () => runSequence(), { once: true });
+      function runSequence() {
         if (!playedOnce) {
           reveal();
           playedOnce = true;
@@ -203,7 +375,7 @@
             }
           } catch (e) {}
         }
-      }, { once: true });
+      }
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
@@ -293,8 +465,11 @@
     })();
 
     function computeDotPositions() {
+      if (!rail) return;
       const railRect = rail.getBoundingClientRect();
-      dotPositions = dots.map(d => {
+      const live = Array.from(document.querySelectorAll('.dot-rail .dot:not(.dot-exit)'));
+      dots = live;
+      dotPositions = live.map(d => {
         const r = d.getBoundingClientRect();
         return r.top - railRect.top + r.height / 2;
       });
@@ -307,7 +482,9 @@
     }
 
     function setActiveIndex(index) {
-      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+      const live = Array.from(document.querySelectorAll('.dot-rail .dot:not(.dot-exit)'));
+      dots = live;
+      live.forEach((d, i) => d.classList.toggle('active', i === index));
       moveIndicatorTo(index);
     }
 
@@ -325,6 +502,7 @@
     }
 
     function navigateToIndex(idx) {
+      if (section2ScrollLocked) return;
       const clamped = Math.max(0, Math.min(sectionList.length - 1, idx));
       const target = sectionList[clamped];
       if (!target) return;
@@ -334,23 +512,26 @@
       setActiveIndex(clamped);
       // Toggle nav visibility based on destination section (hide on Section 1)
       setNavVisibilityBySectionId(target.id);
-      setTimeout(() => { pagingLock = false; }, pageDelayMs);
+      setTimeout(() => { if (!section2ScrollLocked) pagingLock = false; }, pageDelayMs);
     }
 
-    // Click to scroll (disabled during intro)
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        if (autoIntroPlaying) return;
+    // Click to scroll (disabled during intro / section-2 lock)
+    // Bind once on the rail so removed/remaining dots stay correct without index refresh
+    if (rail) {
+      rail.addEventListener('click', (e) => {
+        const dot = e.target.closest('.dot');
+        if (!dot || !rail.contains(dot) || dot.classList.contains('dot-exit')) return;
+        if (autoIntroPlaying || section2ScrollLocked) return;
         const sel = dot.getAttribute('data-target');
         const target = document.querySelector(sel);
-        if (target) {
-          const isMobile = window.matchMedia('(max-width: 640px)').matches;
-          target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
-          setActiveIndex(i);
-          setNavVisibilityBySectionId(target.id);
-        }
+        if (!target) return;
+        const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
+        const live = Array.from(document.querySelectorAll('.dot-rail .dot:not(.dot-exit)'));
+        setActiveIndex(live.indexOf(dot));
+        setNavVisibilityBySectionId(target.id);
       });
-    });
+    }
 
     function pageNext() { navigateToIndex(activeIndexByViewportCenter() + 1); }
     function pagePrev() { navigateToIndex(activeIndexByViewportCenter() - 1); }
@@ -362,7 +543,7 @@
       // Wheel paging
       window.addEventListener('wheel', (e) => {
         e.preventDefault();
-        if (pagingLock || autoIntroPlaying) return;
+        if (pagingLock || autoIntroPlaying || section2ScrollLocked) return;
         const dy = e.deltaY;
         if (dy > 15) pageNext();
         else if (dy < -15) pagePrev();
@@ -378,7 +559,7 @@
         const y = e.touches[0].clientY;
         const dy = y - touchStartY;
         e.preventDefault();
-        if (pagingLock || autoIntroPlaying) return;
+        if (pagingLock || autoIntroPlaying || section2ScrollLocked) return;
         const threshold = 24;
         if (dy <= -threshold) { pageNext(); touchStartY = null; }
         else if (dy >= threshold) { pagePrev(); touchStartY = null; }
@@ -424,6 +605,7 @@
 
     // Observe all sections
     sectionList.forEach(sec => sectionObserver.observe(sec));
+    syncDotsToSections();
 
     // Initialize nav visibility on load (before scrolling)
     (function initNavVisibility(){
