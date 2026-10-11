@@ -10,6 +10,9 @@ Thumbs.db
 
 # Raw media exports (too large for GitHub; ship compressed versions only)
 *.mov
+# Compressed HEVC alpha videos for Safari (under 1 MB each).
+!images/noblecart-intro-hevc.mov
+!images/noblecart-intro-mobile-hevc.mov
 images/no-more-frame-4x.png
 *.bak
 

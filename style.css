@@ -265,12 +265,33 @@ img.logo.reveal {
   object-position: center; /* keep center focus */
 }
 
-/* Section 2: fill the viewport (cover top and bottom); on tall screens
-   a little of the left/right is cropped, not scaled. */
-#newvideo .hero-video {
-  object-fit: cover;
-  object-position: center;
+/* Section 2: edge-to-edge black stage with the complete transparent video frame. */
+#newvideo {
+  min-height: 100svh;
+  padding: 0;
   background: #000;
+}
+#newvideo .video-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+#newvideo.ready .video-bg { opacity: 1; }
+#newvideo .hero-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: transparent;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #newvideo .video-bg { transition: none; }
 }
 
 /* Black overlay that fades out when video starts */
@@ -299,10 +320,16 @@ img.logo.reveal {
   transition: opacity 1400ms ease-in-out;
 }
 
-/* ===== Section #nc-4: shrink video under heading after reveal ===== */
-#nc-4 {
-  display: grid;
-  grid-template-rows: auto 1fr; /* title | video area */
+/* ===== Table UI and scan demo: full-resolution videos with a soft reveal ===== */
+:is(#nc-4, #nc-scan) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 4svh, 40px);
+  box-sizing: border-box;
+  min-height: 100svh;
+  padding: clamp(28px, 5svh, 48px) clamp(48px, 6vw, 96px);
 }
 /* ===== Section #nc-1: title swap animation support ===== */
 #nc-1 h2 {
@@ -313,54 +340,85 @@ img.logo.reveal {
   opacity: 0;
   transform: translateY(6px);
 }
-#nc-4 .nc4-content {
+:is(#nc-4, #nc-scan) .nc4-content {
   position: relative;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 0 0 auto;
   text-align: center;
-  padding: clamp(40px, 40vh, 108px) 20px 0; /* nudge heading a bit further down */
+  width: min(100%, 720px);
 }
-#nc-4 #nc4-title {
+:is(#nc-4, #nc-scan) .nc4-title {
+  display: grid;
+  place-items: center;
+  min-height: 1.2em;
   margin: 0;
-  font-size: clamp(24px, 5vw, 46px);
-  letter-spacing: 0.2px;
-  opacity: 0;                    /* start hidden */
-  transform: translateY(10px);   /* slight offset */
-  transition: opacity 4200ms cubic-bezier(0.22, 1, 0.36, 1),
-              transform 4200ms cubic-bezier(0.22, 1, 0.36, 1);
+  font-size: clamp(22px, min(4.5vw, 6svh), 46px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 1000ms ease, transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-#nc-4.title-show #nc4-title {
-  opacity: 1;
-  transform: translateY(0);
+:is(#nc-4, #nc-scan).title-show .nc4-title { opacity: 1; transform: translateY(0); }
+:is(#nc-4, #nc-scan) .nc4-caption {
+  grid-area: 1 / 1;
+  max-width: 100%;
+  text-wrap: balance;
+  opacity: 0;
+  transition: opacity 220ms ease;
 }
-#nc-4 .video-bg {
-  transform-origin: top center;
-  transition: transform 6000ms cubic-bezier(0.22, 1, 0.36, 1),
-              border-radius 1200ms ease,
-              box-shadow 1200ms ease;
+:is(#nc-4, #nc-scan) .nc4-caption.is-on { opacity: 1; }
+:is(#nc-4, #nc-scan) .video-bg {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  width: min(100%, 1120px, calc(160svh - 360px));
+  aspect-ratio: 8 / 5;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: clamp(14px, 2vw, 24px);
+  background: #f1f1f1;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.28);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 1200ms ease, transform 1400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-#nc-4 .hero-video {
-  transition: border-radius 1200ms ease, filter 400ms ease;
-  filter: brightness(0.96); /* slightly darken video */
+:is(#nc-4, #nc-scan).ready .video-bg { opacity: 1; transform: translateY(0); }
+:is(#nc-4, #nc-scan) .hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
 }
-/* Shrink state: move video down and scale it so it sits under the heading */
-#nc-4.shrink .video-bg {
-  transform: translateY(clamp(21vh, 31vh, 41vh)) scale(0.55);
+#nc-scan .nc-scan-heading {
+  margin: 0 0 16px;
+  color: rgba(255,255,255,0.65);
+  font-size: clamp(14px, 1.6vw, 18px);
+  line-height: 1.45;
+  text-wrap: balance;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 1000ms ease, transform 1200ms ease;
 }
-#nc-4.shrink .hero-video {
-  border-radius: 16px; /* give it a card look when small */
+#nc-scan.title-show .nc-scan-heading { opacity: 1; transform: none; }
+@media (max-width: 640px) {
+  /* Reserve the right edge for the section navigation. */
+  :is(#nc-4, #nc-scan) { gap: 28px; padding: 32px max(60px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); }
+  :is(#nc-4, #nc-scan) .nc4-title { font-size: clamp(20px, 5.8vw, 30px); min-height: 2.4em; }
+  :is(#nc-4, #nc-scan) .video-bg { width: 100%; border-radius: 14px; }
 }
-/* Add spacing between title and video when shrunk */
-#nc-4.shrink .nc4-content {
-  padding-bottom: clamp(16px, 6vh, 56px);
+@media (max-height: 480px) and (orientation: landscape) {
+  :is(#nc-4, #nc-scan) { gap: 16px; padding-block: 24px; }
+  :is(#nc-4, #nc-scan) .nc4-title { font-size: 22px; }
+  :is(#nc-4, #nc-scan) .video-bg { width: min(100%, calc(160svh - 224px)); }
 }
-
-@media (max-width: 760px) {
-  #nc-4.shrink .video-bg {
-    transform: translateY(clamp(24vh, 34vh, 44vh)) scale(0.6);
-  }
+@media (prefers-reduced-motion: reduce) {
+  #nc-scan .nc-scan-heading { opacity: 1; transform: none; transition: none; }
+  :is(#nc-4, #nc-scan) .nc4-caption { transition: none; transform: none; }
+  :is(#nc-4, #nc-scan) .nc4-title, :is(#nc-4, #nc-scan).title-show .nc4-title, :is(#nc-4, #nc-scan) .video-bg,
+  :is(#nc-4, #nc-scan).ready .video-bg { opacity: 1; transform: none; transition: none; }
 }
 
 /* Removed borders between sections for a seamless look */
@@ -578,11 +636,16 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   width: clamp(240px, 60vw, 840px);
   height: auto;
 }
-/* ===== Section #nc-5: Text left, phone image right ===== */
+/* ===== Section #nc-5: value line left, app screens fading on the right ===== */
 #nc-5 {
-  display: block; /* override grid from generic .nobelcart-section if any */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  will-change: auto;
 }
 #nc-5 .nc5-grid {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
@@ -594,42 +657,149 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 #nc-5 .nc5-text {
   text-align: left;
 }
-#nc-5 .nc5-text h2 {
-  margin: 0;
-  font-size: clamp(24px, 4.8vw, 46px);
-  line-height: 1.2;
-  letter-spacing: 0.2px;
-  opacity: 0;                   /* start hidden */
-  transform: translateY(10px);  /* slight offset */
-  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
-              transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+#nc-5 .nc5-kicker {
+  margin: 0 0 12px;
+  font-size: clamp(13px, 1.6vw, 15px);
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.55);
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-#nc-5.show-text .nc5-text h2 {
+#nc-5.show-text .nc5-kicker {
+  opacity: 1;
+}
+#nc-5 .nc5-line {
+  margin: 0;
+  max-width: 12ch;
+  min-height: 3.5em;
+  font-size: clamp(28px, 4.8vw, 52px);
+  line-height: 1.15;
+  letter-spacing: 0.2px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-5 .nc5-line.is-on {
   opacity: 1;
   transform: translateY(0);
+}
+#nc-5 .nc5-timeline {
+  margin-top: 28px;
+  width: min(340px, 100%);
+  height: 12px;
+  border-radius: 999px;
+  /* Unfilled track: charcoal capsule, darker along the top edge */
+  background: linear-gradient(
+    180deg,
+    #4d4d4d 0%,
+    #535353 8%,
+    #5d5d5d 25%,
+    #696969 42%,
+    #6e6e6e 58%,
+    #6e6e6e 92%,
+    #666666 100%
+  );
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  pointer-events: none;
+}
+#nc-5 .nc5-timeline-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  /* Filled portion: silver, gray at the top, near-white through the body, dark hairline at the bottom */
+  background: linear-gradient(
+    180deg,
+    #b6b6b6 0%,
+    #c4c4c4 17%,
+    #d0d0d0 25%,
+    #dddddd 33%,
+    #e9e9e9 42%,
+    #f1f1f1 50%,
+    #f5f5f5 62%,
+    #f4f4f4 90%,
+    #878787 100%
+  );
 }
 #nc-5 .nc5-media {
   display: flex;
   justify-content: flex-end;
-  align-self: end; /* sit lower within the row */
-  margin-top: clamp(8px, 10vh, 160px); /* push image down */
+  align-self: center;
+  padding-right: 28px; /* keep the phone clear of the section dots */
 }
 #nc-5 .nc5-phone {
-  display: block;
-  width: clamp(220px, 28vw, 380px); /* phone-sized on desktop */
+  position: relative;
+  /* 630px bitmap shown at half size: one screen pixel per image pixel on a retina display */
+  width: min(315px, 70vw);
   height: auto;
-  border-radius: 20px;
+  aspect-ratio: 630 / 1299;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #83acc9;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+#nc-5 .nc5-phone img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#nc-5 .nc5-phone img.is-on {
+  opacity: 1;
 }
 
 @media (max-width: 820px) {
   #nc-5 .nc5-grid {
     grid-template-columns: 1fr; /* stack */
+    justify-items: center;
     text-align: center;
   }
-  #nc-5 .nc5-text { text-align: center; }
-  #nc-5 .nc5-media { justify-content: center; align-self: center; margin-top: 12px; }
-  #nc-5 .nc5-phone { width: clamp(240px, 60vw, 420px); }
+  #nc-5 .nc5-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  #nc-5 .nc5-line { max-width: 16ch; margin-left: auto; margin-right: auto; }
+  #nc-5 .nc5-timeline { margin-left: auto; margin-right: auto; }
+  #nc-5 .nc5-media {
+    justify-content: center;
+    align-self: center;
+    width: 100%;
+    margin-top: 12px;
+    padding-right: 0; /* desktop inset is for the side dots; it pulls the phone off center */
+  }
+  #nc-5 .nc5-phone { width: min(240px, 62vw); height: auto; margin-left: auto; margin-right: auto; }
+}
+
+/* Mobile entrance for the app showcase after Table UI. */
+@media (max-width: 640px) {
+  #nc-5 .nc5-media {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 1200ms ease, transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #nc-5 .nc5-timeline {
+    opacity: 0;
+    transition: opacity 1200ms ease;
+  }
+  #nc-5.show-text .nc5-media { opacity: 1; transform: translateY(0); }
+  #nc-5.show-text .nc5-timeline { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #nc-5 .nc5-media,
+  #nc-5.show-text .nc5-media,
+  #nc-5 .nc5-timeline { opacity: 1; transform: none; transition: none; }
+  #nc-5 .nc5-kicker,
+  #nc-5 .nc5-line,
+  #nc-5 .nc5-phone img { transition: none; }
 }
 /* Section #nc-3 zoom hero: start large and zoom out when in view */
 #nc-3 .zoom-hero {
@@ -692,6 +862,12 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 #nc-3 {
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100svh;
+  padding: clamp(24px, 6svh, 60px) clamp(48px, 8vw, 72px);
 }
 #nc-3::after {
   content: "";
@@ -706,14 +882,18 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 #nc-3.light-reveal::after {
   opacity: 0; /* fade to light */
 }
-#nc-3 .content { position: relative; z-index: 1; }
+#nc-3 .content { position: relative; z-index: 1; width: 100%; min-width: 0; }
 /* NC-3 Tagline fade-in */
 #nc-3 .nc3-tagline {
   margin: 0;
-  max-width: 900px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12em;
   margin-left: auto;
   margin-right: auto;
-  font-size: clamp(22px, 4.8vw, 40px);
+  font-size: clamp(18px, min(6vw, 8svh), 40px);
   letter-spacing: 0.2px;
   line-height: 1.2;
   opacity: 0;
@@ -722,6 +902,21 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   transition: opacity 2000ms cubic-bezier(0.22, 1, 0.36, 1),
               transform 2000ms cubic-bezier(0.22, 1, 0.36, 1),
               color 3000ms ease;
+}
+#nc-3 .nc3-tagline span { display: block; }
+#nc-3 .nc3-tagline .nc3-intro { margin-bottom: 0.4em; }
+#nc-3 .nc3-tagline .nc3-words {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.65em;
+  font-size: clamp(12px, 3vw, 30px);
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  #nc-3 .nc3-tagline { opacity: 1; transform: none; color: #fff; transition: none; }
 }
 #nc-3 .nc3-tagline.show {
   opacity: 1;
@@ -805,27 +1000,8 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   #section-3,
   .cta-section { min-height: 100svh; }
 
-  /* NobleCart Section 2: keep full-bleed cover on phones so top and bottom fill */
-  #newvideo .hero-video { object-fit: cover; object-position: center; }
 
-  /* NobleCart Section 4 (#nc-4): start full-screen, then shrink to a rectangle under the text */
-  /* Keep full-screen defaults from .video-section; only adjust shrink state and typography */
-  #nc-4 .nc4-content { padding: clamp(24px, 28vh, 80px) 20px 0; }
-  #nc-4 #nc4-title { font-size: clamp(18px, 6.2vw, 26px); }
-  /* On mobile, when shrinking, convert the full-bleed video into the same rectangle as Section 2 */
-  #nc-4 { display: block; }
-  #nc-4 .hero-video { width: 100%; height: 100%; object-fit: cover; }
-  #nc-4.shrink .video-bg {
-    position: relative;   /* override absolute full-bleed */
-    inset: auto;
-    width: clamp(260px, 92vw, 720px);  /* match Section 2 */
-    aspect-ratio: 16 / 9;              /* match Section 2 */
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-    transform: none;       /* no scale/translate; use actual size */
-    margin: 12px auto 0;   /* center under the text */
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -844,4 +1020,81 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
     letter-spacing: 0.1px;
     line-height: 1.7;
   }
+}
+/* FineAscent phone flow: fade content while section geometry stays stable. */
+/* NobleCart: retain the full tablet UI and give it the phone's available width. */
+@media (max-width: 820px) {
+  body.noblecart-page { scroll-snap-type: none; }
+  body.noblecart-page .section:not(#nc-1):not(#newvideo) {
+    box-sizing: border-box;
+    min-height: 100svh;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+    padding: 40px max(16px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  body.noblecart-page :is(#nc-3, #nc-4, #nc-scan) {
+    padding: 40px max(16px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  body.noblecart-page :is(#nc-4, #nc-scan) { gap: 28px; }
+  body.noblecart-page :is(#nc-4, #nc-scan) .nc4-title {
+    font-size: clamp(24px, 6vw, 36px);
+    line-height: 1.25;
+    min-height: 2.5em;
+  }
+  body.noblecart-page :is(#nc-4, #nc-scan) .video-bg {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 720px;
+    border-radius: 12px;
+  }
+  body.noblecart-page #nc-3 .nc3-tagline { font-size: clamp(28px, 7vw, 40px); }
+  body.noblecart-page #nc-3 .nc3-words {
+    font-size: clamp(16px, 3.5vw, 24px);
+    flex-wrap: wrap;
+    white-space: normal;
+    row-gap: 0.5em;
+  }
+  body.noblecart-page #nc-5 .nc5-grid { box-sizing: border-box; padding: 0; gap: 24px; }
+  body.noblecart-page #nc-5 .nc5-kicker { font-size: 16px; color: rgba(255,255,255,0.75); }
+  body.noblecart-page #nc-5 .nc5-line { font-size: clamp(28px, 7vw, 38px); min-height: 2.3em; }
+  body.noblecart-page #nc-5 .nc5-timeline { width: min(280px, 75vw); margin-top: 20px; }
+  body.noblecart-page #nc-5 .nc5-media { margin-top: 0; }
+  body.noblecart-page #nc-6 .content { box-sizing: border-box; width: 100%; padding: 0; }
+  body.noblecart-page #nc-6 h2 { font-size: clamp(26px, 7vw, 36px); text-wrap: balance; }
+  body.noblecart-page #nc-6 .nc6-subtitle { font-size: 17px; max-width: 28ch; }
+  body.noblecart-page #nc-6 img { width: min(100%, 520px); }
+  /* Keep the original side rail; fade it away when the phone needs the space. */
+  body.noblecart-page .dot-nav { transition: opacity 450ms ease; }
+  body.noblecart-page:not(.nav-peek) .dot-nav { opacity: 0; }
+  body.noblecart-page:not(.nav-peek) .dot-rail { pointer-events: none; }
+  body.noblecart-page .dot-nav:focus-within { opacity: 1; }
+  body.noblecart-page .dot-nav:focus-within .dot-rail { pointer-events: auto; }
+}
+@media (max-width: 820px) and (max-height: 480px) and (orientation: landscape) {
+  body.noblecart-page :is(#nc-4, #nc-scan) { gap: 16px; }
+  body.noblecart-page :is(#nc-4, #nc-scan) .nc4-title { min-height: 1.25em; }
+}
+@media (max-width: 640px) {
+  body.fineascent-page { scroll-snap-type: none; }
+  body.fineascent-page .section { scroll-snap-align: none; scroll-snap-stop: normal; }
+  body.fineascent-page .section {
+    box-sizing: border-box;
+    min-height: 100svh;
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+  body.fineascent-page .section > .container {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 1200ms ease, transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  body.fineascent-page .section.in-view > .container {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  body.fineascent-page .section > .container { opacity: 1; transform: none; transition: none; }
 }
