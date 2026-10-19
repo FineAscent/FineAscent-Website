@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>NobleCart email preview</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { margin:0;background:#dedede;color:#333;font-family:Arial,Helvetica,sans-serif; }
+    main { max-width:1040px;margin:auto;padding:32px 20px; }
+    header { text-align:center;margin-bottom:24px; }
+    h1 { margin:0 0 12px;font-size:26px;font-weight:400;letter-spacing:-.6px; }
+    p { font-size:13px;line-height:1.6;color:#666; }
+    .controls { display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:20px; }
+    button { border:0;border-radius:6px;background:#eeeeee;color:#444;padding:12px 16px;font:14px Arial;cursor:pointer; }
+    button[aria-pressed="true"] { background:#333;color:white; }
+    button:focus-visible { outline:2px solid #555;outline-offset:3px; }
+    iframe { display:block;width:100%;max-width:820px;height:1000px;margin:0 auto;border:0;background:#e3e3e3; }
+    iframe.phone { max-width:390px; }
+    .text-link { display:inline-block;margin:16px 0;color:#555;font-size:13px; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>NobleCart emails</h1>
+      <p>Local design preview. The confirmation uses a non-working example link. No emails are sent.</p>
+      <div class="controls" role="group" aria-label="Email type">
+        <button type="button" data-message="confirmation" aria-pressed="true">Confirmation</button>
+        <button type="button" data-message="deleted" aria-pressed="false">Account deleted</button>
+      </div>
+      <div class="controls" role="group" aria-label="Preview width">
+        <button type="button" data-size="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-size="phone" aria-pressed="false">Phone</button>
+      </div>
+      <a id="text-link" class="text-link" href="email-confirmation-preview.txt">View plain-text version</a>
+    </header>
+    <iframe id="email" title="NobleCart confirmation email preview" src="email-confirmation-preview.html"></iframe>
+  </main>
+  <script>
+    const frame = document.getElementById('email');
+    document.querySelectorAll('[data-message]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-message]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      const message = button.dataset.message;
+      frame.src = 'email-' + message + '-preview.html';
+      frame.title = 'NobleCart ' + message + ' email preview';
+      document.getElementById('text-link').href = 'email-' + message + '-preview.txt';
+    }));
+    document.querySelectorAll('[data-size]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-size]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      frame.classList.toggle('phone', button.dataset.size === 'phone');
+    }));
+  </script>
+</body>
+</html>

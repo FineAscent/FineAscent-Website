@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delete my account</title>
+  <style>
+    :root {
+      --ink: #2d2a26;
+      --muted: #6b6560;
+      --line: #e5e1db;
+      --danger: #b3261e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #faf9f7;
+      color: var(--ink);
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 1px 2px rgba(45, 42, 38, .06), 0 8px 24px rgba(45, 42, 38, .06);
+    }
+
+    h1 { margin: 0 0 8px; font-size: 24px; }
+
+    p.lede { margin: 0 0 24px; color: var(--muted); }
+
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font: inherit;
+      color: inherit;
+      background: #fff;
+      margin-bottom: 18px;
+    }
+
+    input:focus, textarea:focus { outline: 2px solid #8b7355; border-color: transparent; }
+
+    textarea { resize: vertical; min-height: 88px; }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--danger);
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: .55; cursor: default; }
+
+    .note {
+      margin-top: 18px;
+      padding: 14px;
+      background: #fdf6f5;
+      border: 1px solid #f2d9d6;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #7a2b25;
+    }
+
+    .msg { margin-top: 18px; font-size: 15px; }
+
+    .msg.err { color: var(--danger); }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <h1>Delete my account</h1>
+    <p class="lede">This permanently erases your account and all data attached to it.</p>
+
+    <form id="form" novalidate>
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="email" required placeholder="you@example.com">
+
+      <label for="reason">Reason (optional)</label>
+      <textarea id="reason" maxlength="2000" placeholder="Tell us why you're leaving"></textarea>
+
+      <!-- Optional bot protection. Delete this div if you are not using Turnstile. -->
+      <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
+
+      <button id="submit" type="submit">Delete all my data</button>
+    </form>
+
+    <div class="note">
+      For your safety we email you a confirmation link. Your account is only
+      deleted after you click it, so nobody else can delete your account by
+      entering your address here.
+    </div>
+
+    <p class="msg" id="msg" hidden></p>
+  </main>
+
+  <!-- Optional: remove if you are not using Turnstile. -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <script>
+    // Only the project URL and the anon key belong in the browser.
+    // The service role key must NEVER appear on this page.
+    const SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
+
+    const form = document.getElementById("form");
+    const submit = document.getElementById("submit");
+    const msg = document.getElementById("msg");
+
+    function show(text, isError) {
+      msg.textContent = text;
+      msg.classList.toggle("err", !!isError);
+      msg.hidden = false;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const reason = document.getElementById("reason").value.trim();
+      if (!email) return show("Enter your email address.", true);
+
+      submit.disabled = true;
+      submit.textContent = "Sending confirmation…";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/request-account-deletion`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({
+            email,
+            reason,
+            captchaToken: window.turnstile?.getResponse?.(),
+          }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Request failed");
+
+        form.hidden = true;
+        show(data.message);
+      } catch (err) {
+        show(err.message || "Something went wrong. Please try again.", true);
+        submit.disabled = false;
+        submit.textContent = "Delete all my data";
+        window.turnstile?.reset?.();
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+NobleCart by FineAscent
+
+Confirm account deletion
+
+We received a request to permanently delete your NobleCart account.
+
+This cannot be undone. If you want to go ahead, confirm within one hour using the button below.
+
+Permanently delete my account:
+https://example.invalid/delete-account/confirm?token_hash=preview-only&type=magiclink
+
+If you did not request this, ignore this email. Your account is only deleted if the confirmation link is used.
+
+Contact support: fineascentcreative@gmail.com
+
+Privacy: https://fineascent.org/noblecart/privacy-policy/
