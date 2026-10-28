@@ -21,7 +21,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="preload" as="image" href="images/FineAscent2.webp" fetchpriority="high">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=product-actions-7">
 </head>
 
 <body class="fineascent-page">
@@ -44,7 +44,7 @@
 
   <section id="section-3" class="section">
     <div class="container">
-      <img src="images/logo2.webp" alt="FineAscent logo" width="887" height="798" decoding="async">
+      <img src="images/logo2.webp" alt="FineAscent logo" width="887" height="798" loading="lazy" decoding="async">
     </div>
   </section>
 
@@ -64,12 +64,65 @@
   <section id="section-5" class="section cta-section">
     <div class="container">
       <h2>Our Product</h2>
-      <img src="images/NobleCart.webp" alt="NobleCart" width="2030" height="345" decoding="async">
-      <button class="btn-matte" type="button">Check it out</button>
+      <img src="images/NobleCart.webp" alt="NobleCart" width="2030" height="345" loading="lazy" decoding="async">
+      <div class="envelope-stack product-actions" aria-label="Explore NobleCart or get started">
+        <article class="envelope-card">
+          <button class="envelope-select" type="button" aria-expanded="false" aria-controls="product-explore">Check it out</button>
+          <div class="envelope-details" id="product-explore" hidden>
+            <div class="product-details-inner">
+              <p>See NobleCart in action.</p>
+              <a href="nobelcart.html" data-product-link>Explore NobleCart <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </article>
+        <article class="envelope-card">
+          <button class="envelope-select" type="button" aria-expanded="false" aria-controls="product-contact">Get started</button>
+          <div class="envelope-details" id="product-contact" hidden>
+            <div class="product-details-inner">
+              <p>A conversation with our team.</p>
+              <a href="get-started/">Let’s talk <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
-  <!-- Privacy link (bottom-right, text only) -->
+  <section id="explore" class="section explore-section" aria-label="Explore FineAscent">
+    <div class="envelope-stack">
+      <article class="envelope-card">
+        <button class="envelope-select" type="button" aria-expanded="false" aria-controls="explore-news">News</button>
+        <div class="envelope-details" id="explore-news" hidden>
+          <p>What comes next.</p>
+          <a href="news/">View news <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>
+      <article class="envelope-card">
+        <button class="envelope-select" type="button" aria-expanded="false" aria-controls="explore-reports">Reports</button>
+        <div class="envelope-details" id="explore-reports" hidden>
+          <p>Progress, made clear.</p>
+          <a href="noblecart/transparency/">View reports <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>
+      <article class="envelope-card">
+        <button class="envelope-select" type="button" aria-expanded="false" aria-controls="explore-careers">Careers</button>
+        <div class="envelope-details" id="explore-careers" hidden>
+          <p>Build with us</p>
+          <a href="mailto:fineascentcreative@gmail.com?subject=Careers%20at%20FineAscent">Get in touch <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>
+      <article class="envelope-card">
+        <button class="envelope-select" type="button" aria-expanded="false" aria-controls="explore-contact">Get started</button>
+        <div class="envelope-details" id="explore-contact" hidden>
+          <p>Bring NobleCart to your stores.</p>
+          <a href="get-started/">Let’s get started <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Brand (bottom-left) and privacy link (bottom-right) -->
+  <a class="footer-brand" href="nobelcart.html" aria-label="Switch to NobleCart">NobleCart</a>
   <a class="privacy-link" href="noblecart/privacy-policy/" aria-label="Privacy Policy">Privacy</a>
 
   <!-- Right-side dot navigation -->
@@ -80,6 +133,7 @@
       <button class="dot" data-target="#section-3" aria-label="Section 3"></button>
       <button class="dot" data-target="#mission-2" aria-label="Mission"></button>
       <button class="dot" data-target="#section-5" aria-label="Call To Action"></button>
+      <button class="dot" data-target="#explore" aria-label="Explore FineAscent"></button>
       <span class="indicator" aria-hidden="true"></span>
     </div>
   </nav>
@@ -140,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
   const sec5Init = document.getElementById('section-5');
   if (sec5Init) sec5Init.classList.remove('loading-mode');
+  document.body.classList.remove('footer-transition');
   // Ensure we start from Section 1, centered on desktop, top-aligned on mobile, without smooth animation
   const root = document.documentElement;
   const prevBehavior = root.style.scrollBehavior;
@@ -157,6 +212,35 @@ document.addEventListener('DOMContentLoaded', () => {
   sections.forEach(sec => {
     sec.classList.add('out-of-view');
     sectionObserver.observe(sec);
+  });
+
+  document.querySelectorAll('.envelope-stack').forEach(stack => {
+    const envelopeCards = Array.from(stack.querySelectorAll('.envelope-card'));
+    const animateDetails = stack.classList.contains('product-actions');
+    envelopeCards.forEach(card => {
+      const button = card.querySelector('.envelope-select');
+      if (animateDetails) {
+        const details = card.querySelector('.envelope-details');
+        details.hidden = false;
+        details.inert = true;
+        details.setAttribute('aria-hidden', 'true');
+      }
+      button.addEventListener('click', () => {
+        const select = !card.classList.contains('is-selected');
+        envelopeCards.forEach(item => {
+          const selected = item === card && select;
+          item.classList.toggle('is-selected', selected);
+          item.querySelector('.envelope-select').setAttribute('aria-expanded', String(selected));
+          const details = item.querySelector('.envelope-details');
+          if (animateDetails) {
+            details.inert = !selected;
+            details.setAttribute('aria-hidden', String(!selected));
+          } else {
+            details.hidden = !selected;
+          }
+        });
+      });
+    });
   });
 
   // Dot navigation setup
@@ -232,21 +316,42 @@ document.addEventListener('DOMContentLoaded', () => {
     dot.addEventListener('click', () => navigateToIndex(i));
   });
 
-  // ----- CTA: Local loading screen on Section 5, then navigate to NobleCart -----
-  const ctaBtn = document.querySelector('#section-5 .btn-matte');
+  // ----- Product card: fade into the NobleCart introduction -----
+  const ctaBtn = document.querySelector('#section-5 [data-product-link]');
   if (ctaBtn) {
-    ctaBtn.addEventListener('click', () => {
+    ctaBtn.addEventListener('click', event => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
       if (pagingLock) return; // avoid conflicts during paging
       const sec5 = document.getElementById('section-5');
       if (!sec5) return;
+      pagingLock = true;
       // Ensure Section 5 is correctly aligned before animating
-      sec5.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
+      sec5.scrollIntoView({ behavior: 'instant', block: isMobile ? 'start' : 'center' });
+      const productLogo = sec5.querySelector('.container > img');
+      if (productLogo) {
+        const bounds = productLogo.getBoundingClientRect();
+        const targetCenter = window.innerHeight / 2 + 12;
+        sec5.style.setProperty('--product-logo-travel', Math.max(0, targetCenter - bounds.top - bounds.height / 2) + 'px');
+      }
       // Trigger local loading look
       sec5.classList.add('loading-mode');
-      // After a short delay, navigate to the NobleCart page
-      setTimeout(() => {
-        window.location.href = 'nobelcart.html';
-      }, 700);
+      document.body.classList.add('footer-transition');
+      // Keep the logo visible as it settles into the next page's center.
+      let navigationStarted = false;
+      let navigationFallback;
+      const openProduct = () => {
+        if (navigationStarted) return;
+        navigationStarted = true;
+        clearTimeout(navigationFallback);
+        try { sessionStorage.setItem('fineascent-product-handoff', String(Date.now())); } catch (error) {}
+        window.location.href = ctaBtn.href;
+      };
+      productLogo?.addEventListener('transitionend', event => {
+        if (event.target === productLogo && event.propertyName === 'transform') openProduct();
+      });
+      if (reduceMotion.matches) openProduct();
+      else navigationFallback = setTimeout(openProduct, 1350);
     });
   }
 

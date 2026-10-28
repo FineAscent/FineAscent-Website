@@ -1,0 +1,18 @@
+NobleCart by FineAscent
+
+Verify your email
+
+Welcome to NobleCart.
+
+Enter this verification code in the app to confirm your email address.
+
+482619
+
+Keep this code private. If you did not request this email, you can ignore it.
+
+Or confirm your email using this link:
+https://example.invalid/verify-email?token=preview-only
+
+Contact support: fineascentcreative@gmail.com
+
+Privacy: https://fineascent.org/noblecart/privacy-policy/

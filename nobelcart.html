@@ -3,6 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    // Disable restoration before the browser can restore a later section on refresh.
+    document.documentElement.classList.add('noblecart-starting');
+    try {
+      const handoffAt = Number(sessionStorage.getItem('fineascent-product-handoff'));
+      sessionStorage.removeItem('fineascent-product-handoff');
+      if (performance.getEntriesByType('navigation')[0]?.type !== 'reload' && Date.now() - handoffAt < 10000) {
+        document.documentElement.classList.add('product-handoff');
+      }
+    } catch (error) {}
+    try {
+      history.scrollRestoration = 'manual';
+      if (performance.getEntriesByType('navigation')[0]?.type === 'reload' && location.hash) {
+        history.replaceState(history.state, '', location.pathname + location.search);
+      }
+    } catch (error) {}
+    function resetNobleCartStart() {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.getElementById('nc-1')?.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+    window.addEventListener('pageshow', () => {
+      resetNobleCartStart();
+      requestAnimationFrame(() => {
+        resetNobleCartStart();
+        document.documentElement.classList.remove('noblecart-starting');
+      });
+    }, { once: true });
+  </script>
   <title>NobleCart • FineAscent</title>
   <meta name="description" content="NobleCart by FineAscent: checkout instantly with no waiting, a Table UI that makes checkout easy, and an app to manage your purchases in one place.">
   <link rel="canonical" href="https://fineascent.org/nobelcart.html">
@@ -19,7 +47,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" as="image" href="images/NobleCart.webp" fetchpriority="high">
-  <link rel="stylesheet" href="style.css?v=noblecart-mobile-3">
+  <link rel="stylesheet" href="style.css?v=noblecart-conversation-1">
 </head>
 <body class="inverted noblecart-page">
   <!-- Section 1: identical to index section 5, kept dark only on this section -->
@@ -27,7 +55,7 @@
     <div class="container">
       <h2>Our Product</h2>
       <img src="images/NobleCart.webp" alt="NobleCart" width="2030" height="345" fetchpriority="high">
-      <button class="btn-matte" type="button">Check it out</button>
+      <button class="btn-matte" type="button" aria-label="Explore NobleCart"><span class="explore-label">Explore</span></button>
     </div>
   </section>
 
@@ -35,10 +63,8 @@
   <section class="section video-section" id="newvideo">
     <div class="video-bg">
       <video class="hero-video" muted playsinline disablepictureinpicture disableremoteplayback preload="auto" poster="images/noblecart-intro-poster.webp" width="1920" height="1080" aria-label="NobleCart checkout table smoothly pulling back to reveal the complete product">
-        <source src="images/noblecart-intro-mobile-hevc.mov" type='video/mp4; codecs="hvc1"' media="(max-width: 640px)">
-        <source src="images/noblecart-intro-hevc.mov" type='video/mp4; codecs="hvc1"'>
-        <source src="images/noblecart-intro-mobile.webm" type='video/webm; codecs="vp9"' media="(max-width: 640px)">
-        <source src="images/noblecart-intro.webm" type='video/webm; codecs="vp9"'>
+        <source data-src="images/noblecart-intro-hevc.mov" type='video/mp4; codecs="hvc1"'>
+        <source data-src="images/noblecart-intro.webm" type='video/webm; codecs="vp9"'>
       </video>
     </div>
   </section>
@@ -66,8 +92,8 @@
       </h2>
     </div>
     <div class="video-bg">
-      <video class="hero-video" muted playsinline disablepictureinpicture disableremoteplayback preload="metadata" poster="images/ui-noblecart-poster.jpg" width="1280" height="800" aria-label="NobleCart Table UI: pick a category, search for an item, then check the item and tag">
-        <source src="images/Ui-NobleCart.mp4" type="video/mp4">
+      <video class="hero-video" muted playsinline disablepictureinpicture disableremoteplayback preload="auto" poster="images/ui-noblecart-poster.jpg" width="1280" height="800" aria-label="NobleCart Table UI: pick a category, search for an item, then check the item and tag">
+        <source data-src="images/Ui-NobleCart.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
     </div>
@@ -82,9 +108,9 @@
       </h2>
     </div>
     <div class="video-bg">
-      <video class="hero-video" muted playsinline disablepictureinpicture disableremoteplayback preload="metadata" poster="images/noblecart-scan-cart-poster.webp" width="1280" height="800" aria-label="Scan orange juice, bananas, and eggs into NobleCart. The total updates, then Checkout is highlighted without opening it.">
-        <source src="images/noblecart-scan-cart-lossless.webm?v=tablet-1" type='video/webm; codecs="vp09.00.41.08"'>
-        <source src="images/noblecart-scan-cart.mp4?v=tablet-1" type="video/mp4">
+      <video class="hero-video" muted playsinline disablepictureinpicture disableremoteplayback preload="auto" poster="images/noblecart-scan-cart-poster.webp" width="1280" height="800" aria-label="Scan orange juice, bananas, and eggs into NobleCart. The total updates, then Checkout is highlighted without opening it.">
+        <source data-src="images/noblecart-scan-cart-lossless.webm?v=tablet-1" type='video/webm; codecs="vp09.00.41.08"'>
+        <source data-src="images/noblecart-scan-cart.mp4?v=tablet-1" type="video/mp4">
         Your browser does not support the video tag.
       </video>
     </div>
@@ -100,15 +126,38 @@
       </div>
       <div class="nc5-media">
         <div class="nc5-phone">
-          <img class="is-on" src="images/IMG_1013%201-2.png" alt="NobleCart home, with weekly spending, cabinet, awards, and receipts" width="630" height="1299" data-line="Simple. Intuitive. Smart.">
-          <img src="images/IMG_1095%201-4.png" alt="Products in stock at a store" width="1260" height="2598" data-line="Know before going.">
-          <img src="images/IMG_1096%201-2.png" alt="Saved items NobleCart remembers" width="1260" height="2598" data-line="Remembered for you.">
+          <img class="is-on" src="images/app-home-lossless.webp" loading="lazy" decoding="async" alt="NobleCart home, with weekly spending, cabinet, awards, and receipts" width="630" height="1299" data-line="Simple. Intuitive. Smart.">
+          <img src="images/app-find-lossless.webp" loading="lazy" decoding="async" alt="Products in stock at a store" width="1260" height="2598" data-line="Know before going.">
+          <img src="images/app-cabinet-lossless.webp" loading="lazy" decoding="async" alt="Saved items NobleCart remembers" width="1260" height="2598" data-line="Remembered for you.">
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Section 7: Development update -->
+  <!-- Cart animation: retain the original full-HD composition on every screen. -->
+  <section class="section cart-animation-section" id="nc-cart" aria-label="NobleCart cart animation">
+    <div class="cart-animation-scene">
+    <div class="cart-animation-media">
+      <video muted playsinline disablepictureinpicture disableremoteplayback preload="auto" poster="images/noblecart-cart-reversed-poster.webp" width="1920" height="1080" aria-label="NobleCart shopping cart animation">
+        <source data-src="images/noblecart-cart-mobile-hold.mp4" media="(max-width: 820px) and (orientation: portrait)" type="video/mp4">
+        <source data-src="images/noblecart-cart-pingpong-hold.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Store inquiry -->
+  <section class="section cta-section" id="nc-store" aria-labelledby="nc-store-title">
+    <div class="content">
+      <img class="nc-store-logo" src="images/noblecart-system.svg" alt="NobleCart System" loading="lazy" decoding="async">
+      <h2 id="nc-store-title">Let’s see where NobleCart fits.</h2>
+      <p class="nc-store-invitation">A conversation about your goals, the product today, and what comes next.</p>
+      <a class="btn-matte" href="get-started/">Let’s talk</a>
+    </div>
+  </section>
+
+  <!-- Section 9: Development update -->
   <section class="section nobelcart-section" id="nc-6">
     <div class="content">
       <h2 class="nc6-title">Development in progress</h2>
@@ -117,7 +166,8 @@
     </div>
   </section>
 
-  <!-- Privacy link (bottom-right, text only) -->
+  <!-- Brand (bottom-left) and privacy link (bottom-right) -->
+  <a class="footer-brand" href="index.html" aria-label="Switch to FineAscent">NobleCart</a>
   <a class="privacy-link" href="noblecart/privacy-policy/" aria-label="Privacy Policy">Privacy</a>
 
   <!-- Right-side dot navigation -->
@@ -129,25 +179,56 @@
       <button class="dot" data-target="#nc-4" aria-label="Section 4"></button>
       <button class="dot" data-target="#nc-scan" aria-label="Section 5"></button>
       <button class="dot" data-target="#nc-5" aria-label="Section 6"></button>
-      <button class="dot" data-target="#nc-6" aria-label="Section 7"></button>
+      <button class="dot" data-target="#nc-cart" aria-label="NobleCart cart"></button>
+      <button class="dot" data-target="#nc-store" aria-label="Talk with the NobleCart team"></button>
+      <button class="dot" data-target="#nc-6" aria-label="Section 9"></button>
       <span class="indicator" aria-hidden="true"></span>
     </div>
   </nav>
 
   <script>
+    // Reveal the system invitation once as it scrolls into view.
+    (() => {
+      const section = document.getElementById('nc-store');
+      if (!section || !('IntersectionObserver' in window)
+        || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const observer = new IntersectionObserver(entries => {
+        if (!entries.some(entry => entry.isIntersecting)) return;
+        section.classList.add('system-revealed');
+        observer.disconnect();
+      }, { threshold: 0.3 });
+      section.classList.add('system-reveal-ready');
+      observer.observe(section);
+    })();
+
+    // Fade to the next page's paper color before navigation.
+    const learnMoreLink = document.querySelector('#nc-store .btn-matte');
+    let leavingForSystem = false;
+    learnMoreLink.addEventListener('click', event => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+        || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      event.preventDefault();
+      if (leavingForSystem) return;
+      leavingForSystem = true;
+      document.body.classList.add('system-leaving');
+      setTimeout(() => {
+        try { sessionStorage.setItem('noblecart-system-arrival', String(Date.now())); } catch (error) {}
+        window.location.assign(learnMoreLink.href);
+      }, 650);
+    });
+    window.addEventListener('pageshow', () => {
+      leavingForSystem = false;
+      document.body.classList.remove('system-leaving');
+    });
+
     // Intro animation on load: keep viewport on first section, animate dots from last to first
     document.addEventListener('DOMContentLoaded', () => {
       const isMobile = window.matchMedia('(max-width: 820px)').matches;
       try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
-      const root = document.documentElement;
-      const prevBehavior = root.style.scrollBehavior;
-      root.style.scrollBehavior = 'auto';
-      window.scrollTo(0, 0);
-      const first = document.getElementById('nc-1');
-      if (first) first.scrollIntoView({ block: isMobile ? 'start' : 'center' });
-      root.style.scrollBehavior = prevBehavior || '';
+      resetNobleCartStart();
       // Defer to next frame so rail can measure correctly
       requestAnimationFrame(() => {
+        document.body.classList.add('product-entered');
         computeDotPositions();
         // Lock page scroll/interaction during intro
         document.body.style.overflow = 'hidden';
@@ -157,12 +238,17 @@
       });
       // After 2s, swap Section 1 title to "Introducing" with a soft fade
       const nc1Title = document.querySelector('#nc-1 h2');
+      const brandButton = document.querySelector('.footer-brand');
       if (nc1Title) {
         setTimeout(() => {
           nc1Title.classList.add('title-fade');
+          document.body.classList.add('footer-transition');
           setTimeout(() => {
             nc1Title.textContent = 'Introducing';
+            if (brandButton) brandButton.textContent = 'FineAscent';
             nc1Title.classList.remove('title-fade');
+            document.body.classList.remove('footer-transition');
+            document.getElementById('nc-1').classList.add('explore-ready');
           }, 600); // match CSS transition duration
         }, 2000);
       }
@@ -188,43 +274,59 @@
     let pagingLock = false;
     let autoIntroPlaying = false;
     let section2ScrollLocked = false; // lock only during first-run section 2 sequence
+    let cartRevealLocked = false;
     let section2PlayedThisLoad = false; // after first run, never lock/play again until reload
     const pageDelayMs = 800;
 
-    // Decode app screenshots ahead of the transition, rather than during its fade.
+    // Preload one supported, full-quality source per video. Keep the cart's
+    // portrait composition on phones without downloading both orientations.
+    const reducedMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const appleAlpha = navigator.vendor === 'Apple Computer, Inc.'
+      || /iP(hone|ad|od)/.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    function prepareVideo(video) {
+      if (!video || reducedMedia.matches) return;
+      const source = Array.from(video.querySelectorAll('source[data-src]')).find(source => {
+        if (source.media && !window.matchMedia(source.media).matches) return false;
+        if (video.closest('#newvideo') && !appleAlpha && source.type.startsWith('video/mp4')) return false;
+        return !!video.canPlayType(source.type);
+      });
+      if (!source || video.dataset.preparedSrc === source.dataset.src) return;
+      video.dataset.preparedSrc = source.dataset.src;
+      video.preload = 'auto';
+      video.src = source.dataset.src;
+      video.load();
+    }
+    function preloadAllVideos() {
+      if (document.hidden) return;
+      document.querySelectorAll('video').forEach(prepareVideo);
+    }
+    document.addEventListener('visibilitychange', preloadAllVideos);
+    reducedMedia.addEventListener('change', preloadAllVideos);
     let appImagesPrepared = false;
     function preloadAppImages() {
       if (appImagesPrepared) return;
       appImagesPrepared = true;
       document.querySelectorAll('#nc-5 .nc5-phone img').forEach(img => {
-        img.decoding = 'async';
+        img.loading = 'eager';
         if (img.decode) img.decode().catch(() => {});
       });
     }
-
-    // Fetch the next demo during the intro's locked playback, without playing it.
     function preloadTableUi() {
-      preloadAppImages();
-      preloadScanDemo();
-      const video = document.querySelector('#nc-4 .hero-video');
-      if (!video || video.dataset.preloaded === '1') return;
-      video.dataset.preloaded = '1';
-      video.preload = 'auto';
-      video.load();
-      if (video.poster) {
-        const poster = new Image();
-        poster.src = video.poster;
-        if (poster.decode) poster.decode().catch(() => {});
-      }
+      prepareVideo(document.querySelector('#nc-4 .hero-video'));
     }
-
     function preloadScanDemo() {
-      const video = document.querySelector('#nc-scan .hero-video');
-      if (!video || video.dataset.preloaded === '1') return;
-      video.dataset.preloaded = '1';
-      video.preload = 'auto';
-      video.load();
+      prepareVideo(document.querySelector('#nc-scan .hero-video'));
     }
+    // App screenshots can still wait until their section is nearby.
+    const appImageWarmup = new IntersectionObserver(entries => {
+      if (document.hidden || navigator.connection?.saveData) return;
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        preloadAppImages();
+      });
+    }, { rootMargin: window.matchMedia('(max-width: 820px)').matches ? '35% 0px' : '75% 0px' });
+    appImageWarmup.observe(document.getElementById('nc-5'));
 
     function lockSection2Scroll(section) {
       section2ScrollLocked = true;
@@ -369,23 +471,17 @@
       const video = section ? section.querySelector('video') : null;
       if (!section || !video) return;
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      // Safari uses Apple's HEVC alpha decoder. Other browsers use VP9 alpha,
-      // even when they report support for ordinary HEVC without transparency.
-      const appleBrowser = navigator.vendor === 'Apple Computer, Inc.'
-        || /iP(hone|ad|od)/.test(navigator.userAgent)
-        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if (!appleBrowser) {
-        video.querySelectorAll('source[type^="video/mp4"]').forEach(source => source.remove());
-        video.load();
-      }
       video.muted = true;
       let started = false;
       let finishing = false;
+      let resumeOnVisible = false;
+      let finishOnVisible = false;
       let watchdog = null;
       let holdTimer = null;
       let waitingTimer = null;
       const finish = () => {
         if (finishing) return;
+        if (document.hidden) { finishOnVisible = true; video.pause(); return; }
         finishing = true;
         clearTimeout(watchdog);
         clearTimeout(holdTimer);
@@ -394,11 +490,12 @@
         removeNewvideoAfterPlay();
       };
       const onEnter = () => {
+        if (document.documentElement.classList.contains('noblecart-starting')) return;
         if (started || section2PlayedThisLoad) return;
         started = true;
         section2PlayedThisLoad = true;
         lockSection2Scroll(section);
-        preloadTableUi();
+        prepareVideo(video);
         setActiveIndex(sectionList.findIndex(s => s.id === 'newvideo'));
         setNavVisibilityBySectionId('newvideo');
         section.classList.add('ready');
@@ -412,6 +509,7 @@
           if (finishing) return;
           clearTimeout(waitingTimer);
           video.currentTime = 0;
+          if (document.hidden) { resumeOnVisible = true; return; }
           video.play().catch(() => {
             if (!finishing) holdTimer = setTimeout(finish, 1500);
           });
@@ -430,7 +528,7 @@
           entries.forEach(entry => {
             if (entry.isIntersecting && entry.intersectionRatio >= 0.45) {
               onEnter();
-              io.unobserve(section);
+              if (started) io.unobserve(section);
             }
           });
         }, { threshold: [0, 0.45, 0.6, 1] });
@@ -446,6 +544,14 @@
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
       }
+      document.addEventListener('visibilitychange', () => {
+        if (!started || finishing || reduce) return;
+        if (document.hidden) {
+          resumeOnVisible = !video.paused;
+          video.pause();
+        } else if (finishOnVisible) finish();
+        else if (resumeOnVisible) { resumeOnVisible = false; video.play().catch(finish); }
+      });
       window.addEventListener('pagehide', () => {
         video.pause();
         clearTimeout(watchdog);
@@ -845,11 +951,11 @@
         const total = holdMs * shots.length;
         const elapsed = restarting ? total : index * holdMs + holdMs - remainingMs;
         timeline.style.transition = 'none';
-        timeline.style.width = reduce ? '100%' : (elapsed / total * 100) + '%';
+        timeline.style.transform = 'scaleX(' + (reduce ? 1 : elapsed / total) + ')';
         if (running && !reduce && !restarting) {
           void timeline.offsetWidth;
-          timeline.style.transition = 'width ' + (total - elapsed) + 'ms linear';
-          timeline.style.width = '100%';
+          timeline.style.transition = 'transform ' + (total - elapsed) + 'ms linear';
+          timeline.style.transform = 'scaleX(1)';
         }
       };
       const show = (i) => {
@@ -930,6 +1036,115 @@
       }, { once: true });
     })();
 
+    // Reveal the entire scene together, then hold still before playback.
+    (function setupCartAnimation() {
+      const section = document.getElementById('nc-cart');
+      const video = section.querySelector('video');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const portraitViewport = window.matchMedia('(max-width: 820px) and (orientation: portrait)');
+      function updateCartPoster() {
+        video.poster = portraitViewport.matches
+          ? 'images/noblecart-cart-mobile-poster.webp'
+          : 'images/noblecart-cart-reversed-poster.webp';
+      }
+      updateCartPoster();
+      const playbackDelay = 4200; // 3.2-second reveal, then a one-second still hold.
+      let inView = false;
+      let phase = 'idle';
+      let playTimer = null;
+      let remainingDelay = playbackDelay;
+      let delayStartedAt = 0;
+      let cartLockUsed = false;
+      function guardRevealScroll(event) {
+        if (!cartRevealLocked || event.ctrlKey || event.metaKey) return;
+        if (event.type === 'keydown' && !['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+      window.addEventListener('wheel', guardRevealScroll, { passive: false, capture: true });
+      window.addEventListener('touchmove', guardRevealScroll, { passive: false, capture: true });
+      window.addEventListener('keydown', guardRevealScroll, { capture: true });
+      function stop() {
+        if (playTimer !== null) {
+          remainingDelay = Math.max(0, remainingDelay - (performance.now() - delayStartedAt));
+          clearTimeout(playTimer);
+          playTimer = null;
+        }
+        cartRevealLocked = false;
+        video.pause();
+      }
+      function sync() {
+        if (document.documentElement.classList.contains('noblecart-starting')) {
+          stop();
+          return;
+        }
+        if (!inView || document.hidden || reduceMotion.matches) {
+          stop();
+          if (reduceMotion.matches) section.classList.add('cart-visible');
+          return;
+        }
+        if (video.readyState < 2 || phase === 'finished') return;
+        if (phase === 'idle') {
+          phase = 'revealing';
+          remainingDelay = playbackDelay;
+          video.currentTime = 0;
+          if (!cartLockUsed) section.scrollIntoView({ behavior: 'instant', block: 'center' });
+          section.classList.add('cart-visible');
+        }
+        if (phase === 'playing') {
+          if (video.paused) video.play().catch(() => {});
+          return;
+        }
+        if (playTimer !== null) return;
+        if (!cartLockUsed) {
+          cartRevealLocked = true;
+          cartLockUsed = true;
+        }
+        delayStartedAt = performance.now();
+        playTimer = setTimeout(() => {
+          playTimer = null;
+          remainingDelay = 0;
+          cartRevealLocked = false;
+          if (inView && !document.hidden && !reduceMotion.matches) {
+            phase = 'playing';
+            video.play().catch(() => {});
+          }
+        }, remainingDelay);
+      }
+      video.addEventListener('loadeddata', sync);
+      video.addEventListener('ended', () => { phase = 'finished'; });
+      video.addEventListener('error', () => {
+        stop();
+        section.classList.add('cart-visible');
+      });
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          inView = entry.isIntersecting && entry.intersectionRatio >= 0.65;
+          if (!inView) {
+            stop();
+            phase = 'idle';
+            remainingDelay = playbackDelay;
+            section.classList.remove('cart-visible');
+          }
+          if (inView) prepareVideo(video);
+          sync();
+        });
+      }, { threshold: [0, 0.65] });
+      observer.observe(section);
+      document.addEventListener('visibilitychange', sync);
+      reduceMotion.addEventListener('change', sync);
+      portraitViewport.addEventListener('change', () => {
+        stop();
+        phase = 'idle';
+        remainingDelay = playbackDelay;
+        section.classList.remove('cart-visible');
+        updateCartPoster();
+        if (inView || video.dataset.preparedSrc) prepareVideo(video);
+        sync();
+      });
+      window.addEventListener('pagehide', stop, { once: true });
+    })();
+
     // Section #nc-6: show title for 3s, then hide it and reveal logo with slight scale
     (function setupNc6Sequence(){
       const sec = document.getElementById('nc-6');
@@ -995,7 +1210,7 @@
     }
 
     function navigateToIndex(idx) {
-      if (section2ScrollLocked) return;
+      if (section2ScrollLocked || cartRevealLocked) return;
       const clamped = Math.max(0, Math.min(sectionList.length - 1, idx));
       const target = sectionList[clamped];
       if (!target) return;
@@ -1014,7 +1229,7 @@
       rail.addEventListener('click', (e) => {
         const dot = e.target.closest('.dot');
         if (!dot || !rail.contains(dot) || dot.classList.contains('dot-exit')) return;
-        if (autoIntroPlaying || section2ScrollLocked) return;
+        if (autoIntroPlaying || section2ScrollLocked || cartRevealLocked) return;
         const sel = dot.getAttribute('data-target');
         const target = document.querySelector(sel);
         if (!target) return;
@@ -1031,10 +1246,11 @@
 
     // Desktop-only discrete paging; on mobile, rely on native scroll-snap
     (function enableDesktopPaging(){
-      const nativeScroll = () => window.matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+      const nativeViewport = window.matchMedia('(max-width: 820px), (pointer: coarse)');
+      const nativeScroll = () => nativeViewport.matches;
       // Wheel paging
       window.addEventListener('wheel', (e) => {
-        if (nativeScroll()) return;
+        if (nativeScroll() || e.ctrlKey || e.metaKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
         e.preventDefault();
         if (pagingLock || autoIntroPlaying || section2ScrollLocked) return;
         const dy = e.deltaY;
@@ -1046,11 +1262,11 @@
       let touchStartY = null;
       window.addEventListener('touchstart', (e) => {
         if (nativeScroll()) return;
-        if (e.touches && e.touches.length > 0) touchStartY = e.touches[0].clientY;
+        touchStartY = e.touches?.length === 1 ? e.touches[0].clientY : null;
       }, { passive: true });
       window.addEventListener('touchmove', (e) => {
         if (nativeScroll()) return;
-        if (touchStartY == null) return;
+        if (touchStartY == null || e.touches?.length !== 1) return;
         const y = e.touches[0].clientY;
         const dy = y - touchStartY;
         e.preventDefault();
@@ -1123,6 +1339,7 @@
       const idx = activeIndexByViewportCenter();
       setActiveIndex(idx >= 0 ? idx : 0);
     });
+    preloadAllVideos();
   </script>
 </body>
 </html>

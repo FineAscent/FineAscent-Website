@@ -27,16 +27,18 @@
       <h1>NobleCart emails</h1>
       <p>Local design preview. The confirmation uses a non-working example link. No emails are sent.</p>
       <div class="controls" role="group" aria-label="Email type">
-        <button type="button" data-message="confirmation" aria-pressed="true">Confirmation</button>
+        <button type="button" data-message="verification-link" aria-pressed="true">Verify email · link</button>
+        <button type="button" data-message="verification-code" aria-pressed="false">Verify email · code</button>
+        <button type="button" data-message="confirmation" aria-pressed="false">Confirmation</button>
         <button type="button" data-message="deleted" aria-pressed="false">Account deleted</button>
       </div>
       <div class="controls" role="group" aria-label="Preview width">
         <button type="button" data-size="desktop" aria-pressed="true">Desktop</button>
         <button type="button" data-size="phone" aria-pressed="false">Phone</button>
       </div>
-      <a id="text-link" class="text-link" href="email-confirmation-preview.txt">View plain-text version</a>
+      <a id="text-link" class="text-link" href="email-verification-link-preview.txt">View plain-text version</a>
     </header>
-    <iframe id="email" title="NobleCart confirmation email preview" src="email-confirmation-preview.html"></iframe>
+    <iframe id="email" title="NobleCart verification link email preview" src="email-verification-link-preview.html"></iframe>
   </main>
   <script>
     const frame = document.getElementById('email');

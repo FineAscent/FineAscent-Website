@@ -17,6 +17,7 @@ The deletion flow is configurable in `config.ts`. The shared email design in
 | `email-template.mjs` | Shared matte HTML/plain-text email design and copy. |
 | `preview-emails.mjs` | Generates local previews without sending email. |
 | `web/email-preview.html` | Desktop/phone preview of both email variants. |
+| `auth-email-templates/confirm-signup-link.html` | Ready-to-paste Supabase verification-link email. |
 | `purge.ts` | Storage, table rows, auth user, audit row. |
 | `index.ts` | The `delete-account` function. Requires a JWT, deletes the caller. |
 | `request-deletion.ts` | The public `request-account-deletion` function. Emails a link, deletes nothing. |
@@ -72,8 +73,9 @@ node account-deletion-kit/preview-emails.mjs
 node --test account-deletion-kit/email-template.test.mjs
 ```
 
-Open `account-deletion-kit/web/email-preview.html`. It switches between the
-confirmation and account-deleted messages at desktop and phone widths. The
+Open `account-deletion-kit/web/email-preview.html`. It defaults to the verification
+link email and also previews verification codes, deletion confirmation, and
+account-deleted messages at desktop and phone widths. The
 generated HTML/text uses the same template as Brevo, with the mountain image
 loaded locally for the preview. Its example confirmation
 URL uses `example.invalid` and cannot delete an account. No mail is sent by the
@@ -81,11 +83,17 @@ preview or tests.
 
 `email-template.mjs` holds the wordmark, support/privacy links, matte colors,
 shared layout, and message copy. The wordmark uses the transparent PNG at
-`https://fineascent.org/images/noblecart-wordmark-black.png` without a background, with
-NobleCart alt text if images are blocked. The small top-right mountain tag uses
+`https://raw.githubusercontent.com/FineAscent/FineAscent-Website/d81c1579aa11e6986029ead9a7dc590c222abbfe/images/noblecart-wordmark-black.png` without a background, with
+NobleCart alt text if images are blocked. The small top-right mountain corner stamp without a badge or backing uses
 the original PNG at `https://fineascent.org/images/logo2.png`; keep both public assets available
 when sending. Essential styles are inline, with a 600px maximum
-width, mobile adjustments, and an Outlook width wrapper. Each message includes
+width, mobile adjustments, and an Outlook width wrapper. Light-only color-scheme
+metadata requests the light appearance in supporting clients. Gmail iOS may
+ignore this and transform both text and backgrounds. Avoid locking backgrounds
+with gradients: Gmail can invert only the text, making it unreadable. Inline
+spacing defaults fit phones even when pasted Gmail messages lose head styles;
+desktop media rules add room in full HTML sends. Test on the actual iPhone mail
+app before claiming an exact match. Each message includes
 a plain-text version; the confirmation also includes a copyable fallback link.
 
 The configured sender name is NobleCart. The sender email is still a placeholder:
@@ -94,6 +102,11 @@ deployment. Deploying the updated functions activates the new emails; changing
 the website alone does not change already-deployed functions. Inbox checks in
 Gmail, Outlook, and Apple Mail remain necessary before production use; browser
 previews do not emulate those clients.
+
+Verification emails use Supabase Auth's templates separately from the Brevo
+deletion functions. Use `auth-email-templates/confirm-signup-link.html` for NobleCart's link
+flow; see `auth-email-templates/README.md` for activation. Its `{{ .ConfirmationURL }}` variable must
+remain dynamic. Generating these files does not change hosted Supabase settings.
 
 ### Secrets
 

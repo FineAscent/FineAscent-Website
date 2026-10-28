@@ -1,0 +1,16 @@
+NobleCart by FineAscent
+
+Verify your email
+
+Welcome to NobleCart.
+
+Confirm your email address to finish setting up your account.
+
+Verify email address:
+{{ .ConfirmationURL }}
+
+If you did not create a NobleCart account, you can ignore this email.
+
+Contact support: fineascentcreative@gmail.com
+
+Privacy: https://fineascent.org/noblecart/privacy-policy/

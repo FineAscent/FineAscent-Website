@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NobleCart System • FineAscent</title>
+  <meta name="description" content="Meet the team building NobleCart. Discuss your store, an investment or a partnership, explore the product’s current stage, and find a useful next step.">
+  <link rel="canonical" href="https://fineascent.org/get-started/">
+  <meta name="theme-color" content="#e3e3e3">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <script>
+    // Refresh returns to the introduction, even after following the form anchor.
+    if (performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+      document.documentElement.classList.add('conversation-starting');
+      try {
+        history.scrollRestoration = 'manual';
+        if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+      } catch (error) {}
+      const resetConversationStart = () => {
+        if (document.activeElement?.matches('input, select, textarea, button')) document.activeElement.blur();
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      };
+      document.addEventListener('DOMContentLoaded', resetConversationStart, { once: true });
+      window.addEventListener('pageshow', () => {
+        resetConversationStart();
+        requestAnimationFrame(() => {
+          resetConversationStart();
+          requestAnimationFrame(() => {
+            resetConversationStart();
+            document.documentElement.classList.remove('conversation-starting');
+          });
+        });
+      }, { once: true });
+    }
+
+    try {
+      const arrival = Number(sessionStorage.getItem('noblecart-system-arrival'));
+      sessionStorage.removeItem('noblecart-system-arrival');
+      if (Date.now() - arrival < 10000) document.documentElement.classList.add('system-arrival');
+    } catch (error) {}
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) document.documentElement.classList.remove('system-arrival');
+    });
+  </script>
+  <link rel="stylesheet" href="page.css?v=conversation-start-1">
+  <script src="inquiry.js?v=conversation-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a href="../index.html" aria-label="Back to FineAscent">&larr; FineAscent</a>
+    <a href="../nobelcart.html">Explore NobleCart &nearr;</a>
+  </header>
+  <main id="main">
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title"><img class="intro-system-logo" src="../images/noblecart-system.svg" alt="NobleCart System" fetchpriority="high"></h1>
+      <p class="intro-invitation">For retailers, investors and partners.</p>
+      <a class="button intro-cta" href="#inquiry">Request a conversation <span aria-hidden="true">&searr;</span></a>
+    </section>
+
+    <section class="working-together" aria-labelledby="together-title">
+      <h2 id="together-title">A conversation with our team.</h2>
+      <ol class="conversation-agenda">
+        <li><h3>Your goals.</h3><p>Tell us about your store, your interests, or the questions on your mind.</p></li>
+        <li><h3>The product today.</h3><p>Explore what we’re building, its current stage, and where we’re headed.</p></li>
+        <li><h3>A useful next step.</h3><p>Discuss whether a pilot, a partnership, or a further conversation makes sense.</p></li>
+      </ol>
+    </section>
+
+    <section class="inquiry-layout" id="inquiry" aria-labelledby="inquiry-title">
+      <div class="inquiry-context">
+        <h2 id="inquiry-title">Let’s start with you.</h2>
+        <p>Share a few details.<br>We’ll reply by email to arrange a time.</p>
+      </div>
+      <div class="inquiry-panel" id="inquiry-panel">
+      <form class="inquiry-form" id="business-inquiry" action="mailto:fineascentcreative@gmail.com" method="post" enctype="text/plain">
+        <div class="form-trap" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+        <div class="field">
+          <label for="company">Company or organization</label>
+          <input id="company" name="company" autocomplete="organization" maxlength="160" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" autocomplete="name" maxlength="100" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="interest">What would you like to explore?</label>
+          <select id="interest" name="interest">
+            <option value="Bring NobleCart to our stores">NobleCart for our stores</option>
+            <option value="Explore a business partnership">Investment or partnership</option>
+            <option>Discuss another opportunity</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">What would you like to discuss?</label>
+          <textarea id="message" name="message" rows="5" maxlength="2400" placeholder="Your store, investment interest, or questions for the team." required></textarea>
+        </div>
+        <p class="form-note" id="email-help">Your request goes directly to our team. We’ll confirm a time together by email.</p>
+        <button class="button" type="submit" aria-describedby="email-help">Request a conversation <span aria-hidden="true">&nearr;</span></button>
+        <p class="privacy-note">We’ll use the details you share to respond to your inquiry. <a href="../noblecart/privacy-policy/">Privacy policy</a></p>
+      </form>
+      <p id="inquiry-status" class="form-status" role="status" tabindex="-1" hidden></p>
+      <div class="inquiry-success" id="inquiry-success" hidden>
+        <p class="eyebrow">Request received</p>
+        <h2 id="success-title" tabindex="-1">Let’s find a time.</h2>
+        <p>Thank you for reaching out. We’ll reply by email to arrange a conversation.</p>
+      </div>
+      </div>
+      <div class="inquiry-follow-up">
+        <p>Want to explore the thinking behind NobleCart first?</p>
+        <a class="text-link" href="../news/noblecart-building-abundance.html">Idea behind NobleCart System <span aria-hidden="true">&nearr;</span></a>
+        <p class="direct-contact">Prefer to email us directly?<br><a href="mailto:fineascentcreative@gmail.com">fineascentcreative@gmail.com</a></p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><a href="../index.html">FineAscent</a><span>Built around a better everyday.</span><a href="../noblecart/privacy-policy/">Privacy</a></footer>
+</body>
+</html>

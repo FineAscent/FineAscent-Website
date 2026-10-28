@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { renderEmail, renderConfirmationEmail, renderFarewellEmail } from './email-template.mjs';
+import { renderEmail, renderConfirmationEmail, renderFarewellEmail, renderVerificationEmail, renderSupabaseVerificationTemplate } from './email-template.mjs';
 
 const link = 'https://example.invalid/delete-account/confirm?token_hash=a%2Bb%2Fc%3D&type=magiclink';
 
@@ -14,6 +14,31 @@ test('confirmation keeps the signed URL intact in HTML and plain text', () => {
   assert.match(html, /Permanently delete my account/);
   assert.match(text, /within one hour/);
   assert.match(text, /Your account is only deleted if the confirmation link is used/);
+});
+
+test('verification code is copyable text, with no confirmation or deletion action', () => {
+  const message = renderVerificationEmail({ code: '482619' });
+  assert.match(message.html, />482619<\/td>/);
+  assert.ok(message.text.includes('482619'));
+  assert.ok(!message.html.includes('Permanently delete'));
+  assert.ok(!message.html.includes('If the button does not work'));
+  assert.throws(() => renderVerificationEmail({}));
+  assert.throws(() => renderVerificationEmail({ code: '123456', link }));
+});
+
+test('Supabase receives dynamic variables, never the preview code or link', async () => {
+  const code = renderSupabaseVerificationTemplate('code');
+  const signupLink = renderSupabaseVerificationTemplate('link');
+  assert.match(code.html, />\{\{ \.Token \}\}<\/td>/);
+  assert.ok(!code.html.includes('482619'));
+  assert.ok(code.html.includes('href="{{ .ConfirmationURL }}"'));
+  assert.ok(!code.html.includes('example.invalid'));
+  assert.ok(signupLink.html.includes('href="{{ .ConfirmationURL }}"'));
+  assert.ok(!signupLink.html.includes('example.invalid'));
+  assert.throws(() => renderSupabaseVerificationTemplate('other'));
+  for (const [mode, message] of [['code', code], ['link', signupLink]]) {
+    assert.equal(await readFile(new URL(`./auth-email-templates/confirm-signup-${mode}.html`, import.meta.url), 'utf8'), message.html);
+  }
 });
 
 test('personalized names are rendered as text, never markup', () => {
@@ -39,7 +64,7 @@ test('copy is escaped and the brand tag uses the original PNG with text fallback
   assert.ok(!/<script\b|<link\b|<iframe\b/i.test(html));
   assert.match(html, /src="https:\/\/fineascent.org\/images\/logo2.png"/);
   assert.match(html, /alt="FineAscent mountain"/);
-  assert.match(html, /src="https:\/\/fineascent.org\/images\/noblecart-wordmark-black.png"/);
+  assert.match(html, /src="https:\/\/raw.githubusercontent.com\/FineAscent\/FineAscent-Website\/d81c1579aa11e6986029ead9a7dc590c222abbfe\/images\/noblecart-wordmark-black.png"/);
   assert.match(html, /alt="NobleCart"/);
   assert.match(html, /max-width:600px/);
   assert.match(html, /\[if mso\]/);
