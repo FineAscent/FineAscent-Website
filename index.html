@@ -60,14 +60,25 @@
     </div>
   </section>
 
-  <!-- Section 5: Call To Action -->
-  <section id="section-5" class="section cta-section">
+  <!-- Section 5: Live countdown -->
+  <section id="section-5" class="section cta-section live-section" aria-labelledby="live-title">
     <div class="container">
-      <h2>Our Product</h2>
-      <img src="images/NobleCart.webp" alt="NobleCart" width="2030" height="346" decoding="async">
-      <button class="btn-matte" type="button">Check it out</button>
+      <h2 id="live-title">Coming live.</h2>
+      <p class="live-date"><time datetime="2026-11-13T14:00:00-06:00">November 13, 2026 &middot; 2 PM CT</time></p>
+      <div class="live-countdown" role="timer" aria-label="Time remaining until November 13 at 2 PM Chicago time" aria-live="off">
+        <div class="live-unit"><span class="live-number" data-countdown="hours">31</span><span class="live-label">Hours</span></div>
+        <span class="live-separator" aria-hidden="true">:</span>
+        <div class="live-unit"><span class="live-number" data-countdown="minutes">00</span><span class="live-label">Minutes</span></div>
+        <span class="live-separator" aria-hidden="true">:</span>
+        <div class="live-unit"><span class="live-number" data-countdown="seconds">00</span><span class="live-label">Seconds</span></div>
+      </div>
+      <p class="live-status" id="live-status">Countdown begins November 12 at 7 AM CT.</p>
+      <button class="btn-matte" type="button" disabled aria-describedby="live-link-note">Watch live<span class="live-arrow" aria-hidden="true"> &nearr;</span></button>
+      <p class="live-link-note" id="live-link-note">Live link coming soon.</p>
+      <noscript><p>The live event is November 13, 2026 at 2 PM Chicago time. Enable JavaScript to see the countdown.</p></noscript>
     </div>
   </section>
+  <script src="homepage-countdown.js" defer></script>
 
   <!-- Privacy link (bottom-right, text only) -->
   <a class="privacy-link" href="noblecart/privacy-policy/" aria-label="Privacy Policy">Privacy</a>
@@ -79,7 +90,7 @@
       <button class="dot" data-target="#mission" aria-label="Vision"></button>
       <button class="dot" data-target="#section-3" aria-label="Section 3"></button>
       <button class="dot" data-target="#mission-2" aria-label="Mission"></button>
-      <button class="dot" data-target="#section-5" aria-label="Call To Action"></button>
+      <button class="dot" data-target="#section-5" aria-label="Live countdown"></button>
       <span class="indicator" aria-hidden="true"></span>
     </div>
   </nav>
@@ -239,24 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
-  // ----- CTA: Local loading screen on Section 5, then navigate to NobleCart -----
-  const ctaBtn = document.querySelector('#section-5 .btn-matte');
-  if (ctaBtn) {
-    ctaBtn.addEventListener('click', () => {
-      if (pagingLock) return; // avoid conflicts during paging
-      const sec5 = document.getElementById('section-5');
-      if (!sec5) return;
-      // Ensure Section 5 is correctly aligned before animating
-      sec5.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
-      // Trigger local loading look
-      sec5.classList.add('loading-mode');
-      // After a short delay, navigate to the NobleCart page
-      setTimeout(() => {
-        window.location.href = 'nobelcart.html';
-      }, 700);
-    });
-  }
 
   // ----- Discrete paging on wheel/touch -----
   let pagingLock = false;
