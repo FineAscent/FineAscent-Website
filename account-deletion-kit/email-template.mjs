@@ -1,9 +1,13 @@
 /** Shared, dependency-free HTML and plain-text templates for transactional email. */
+import { brandedEmailHtml, SUPPORT_EMAIL } from './email-layout.mjs';
+import { receiptEmailHtml } from './receipt-email.mjs';
+export { SUPPORT_EMAIL } from './email-layout.mjs';
+
 const BRAND = {
   name: 'NobleCart',
   website: 'https://fineascent.org/nobelcart.html',
   privacy: 'https://fineascent.org/noblecart/privacy-policy/',
-  support: 'mailto:fineascentcreative@gmail.com',
+  support: 'mailto:' + SUPPORT_EMAIL,
   mountain: 'https://fineascent.org/images/logo2.png',
   wordmark: 'https://raw.githubusercontent.com/FineAscent/FineAscent-Website/d81c1579aa11e6986029ead9a7dc590c222abbfe/images/noblecart-wordmark-black.png',
 };
@@ -12,6 +16,11 @@ const FONT = 'Arial, Helvetica, sans-serif';
 export function escapeHtml(value) {
   return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function previewImages(html, { logoUrl = BRAND.mountain, wordmarkUrl = BRAND.wordmark } = {}) {
+  return html.replaceAll(BRAND.mountain, escapeHtml(logoUrl))
+    .replaceAll(BRAND.wordmark, escapeHtml(wordmarkUrl));
 }
 
 function actionUrl(value) {
@@ -38,88 +47,25 @@ export function renderEmail(content, { logoUrl = BRAND.mountain, wordmarkUrl = B
         <a href="${escapeHtml(action.url)}" style="display:inline-block;padding:16px 24px;border:1px solid #333333;border-radius:6px;background-color:#333333;color:#ffffff;text-decoration:none;font-family:${FONT};font-size:16px;font-weight:400;line-height:22px;mso-padding-alt:0;">${escapeHtml(action.label)}</a>
       </td></tr>
     </table>` : '';
-  const codeHtml = content.code ? `<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;margin:8px 0 28px;">
-    <tr><td align="center" bgcolor="#e3e3e3" style="padding:22px 12px;background-color:#e3e3e3;border-radius:6px;color:#303030;font-family:${FONT};font-size:32px;line-height:40px;letter-spacing:6px;">${escapeHtml(content.code)}</td></tr>
+  const codeHtml = content.code ? `<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;margin:8px 0 24px;">
+    <tr><td align="center" bgcolor="#ffffff" style="padding:22px 12px;background-color:#ffffff;border:1px solid #d8d8d8;border-radius:6px;">
+      <p style="margin:0 0 10px;color:#777777;font-family:${FONT};font-size:11px;line-height:16px;letter-spacing:1.5px;">VERIFICATION CODE</p>
+      <p style="margin:0;color:#303030;font-family:${FONT};font-size:34px;font-weight:600;line-height:44px;letter-spacing:6px;">${escapeHtml(content.code)}</p>
+    </td></tr>
     </table>` : '';
   const fallbackHtml = action ? `<p style="margin:24px 0 8px;color:#777777;font-family:${FONT};font-size:12px;line-height:19px;">If the button does not work, copy this link into your browser:</p>
     <p style="margin:0;color:#666666;font-family:${FONT};font-size:12px;line-height:19px;word-break:break-all;overflow-wrap:anywhere;"><a href="${escapeHtml(action.url)}" style="color:#666666;text-decoration:underline;word-break:break-all;">${escapeHtml(action.url)}</a></p>` : '';
-  const html = `<!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="x-apple-disable-message-reformatting">
-  <meta name="color-scheme" content="light only">
-  <meta name="supported-color-schemes" content="light only">
-  <title>${escapeHtml(content.title)} · ${BRAND.name}</title>
-  <style>
-    :root { color-scheme:light only; supported-color-schemes:light only; }
-    body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
-    table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
-    @media only screen and (min-width:621px) {
-      .email-outer { padding:48px 20px !important; }
-      .email-inner { padding:0 48px 44px !important; }
-      .email-header { padding:0 24px 0 48px !important; }
-      .email-brand { padding-top:44px !important; padding-bottom:32px !important; }
-      .email-title { font-size:30px !important; line-height:38px !important; }
-    }
-    @media only screen and (max-width:620px) {
-      .email-outer { padding:20px 12px !important; }
-      .email-inner { padding:0 24px 32px !important; }
-      .email-header { padding:0 20px 0 24px !important; }
-      .email-brand { padding-top:32px !important; padding-bottom:28px !important; }
-      .email-title { font-size:27px !important; line-height:34px !important; }
-    }
-  </style>
-</head>
-<body style="margin:0;padding:0;width:100%;background-color:#e3e3e3;color-scheme:light only;">
-  <div style="display:none;font-size:1px;color:#e3e3e3;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">${escapeHtml(content.preview)}</div>
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#e3e3e3" style="width:100%;background-color:#e3e3e3;">
-    <tr><td class="email-outer" align="center" style="padding:24px 12px;">
-      <!--[if mso]><table role="presentation" width="600" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
-      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f2f2f2" style="width:100%;max-width:600px;background-color:#f2f2f2;border-radius:8px;">
-        <tr><td class="email-header" style="padding:0 20px 0 24px;">
-          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
-            <tr>
-              <td class="email-brand" valign="top" style="padding:32px 16px 28px 0;">
-                <a href="${BRAND.website}" style="display:block;color:#202020;font-family:${FONT};font-size:24px;line-height:25px;text-decoration:none;">
-                  <img src="${escapeHtml(wordmarkUrl)}" width="147" height="25" alt="NobleCart" style="display:block;width:147px;height:25px;border:0;outline:none;color:#202020;font-family:${FONT};font-size:24px;line-height:25px;">
-                </a>
-                <p style="margin:8px 0 0;color:#777777;font-family:${FONT};font-size:12px;line-height:18px;">By FineAscent</p>
-              </td>
-              <td width="44" valign="top" align="right" style="width:44px;padding:24px 0 0;">
-                <a href="https://fineascent.org/" aria-label="FineAscent" style="display:block;text-decoration:none;">
-                  <img src="${escapeHtml(logoUrl)}" width="40" height="36" alt="FineAscent mountain" style="display:block;width:40px;height:36px;border:0;outline:none;color:#555555;font-family:${FONT};font-size:10px;line-height:14px;">
-                </a>
-              </td></tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td></tr>
-        <tr><td class="email-inner" style="padding:0 24px 32px;">
-          <h1 class="email-title" style="margin:0 0 24px;color:#303030;font-family:${FONT};font-size:27px;font-weight:400;letter-spacing:-0.7px;line-height:34px;">${escapeHtml(content.title)}</h1>
+  const html = previewImages(brandedEmailHtml({
+    title: content.title, preheader: content.preview,
+    contentHtml: `          <h1 class="email-title" style="margin:0 0 24px;color:#303030;font-family:${FONT};font-size:27px;font-weight:400;letter-spacing:-0.7px;line-height:34px;">${escapeHtml(content.title)}</h1>
           ${paragraphs}
           ${actionHtml}
           ${codeHtml}
           ${secondaryAction ? `<p style="margin:0 0 24px;font-family:${FONT};font-size:14px;line-height:23px;"><a href="${escapeHtml(secondaryAction.url)}" style="color:#555555;text-decoration:underline;">${escapeHtml(secondaryAction.label)}</a></p>` : ''}
           <p style="margin:0;color:#666666;font-family:${FONT};font-size:14px;line-height:23px;">${escapeHtml(content.note)}</p>
           ${fallbackHtml}
-          <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;margin-top:36px;border-top:1px solid #d8d8d8;">
-            <tr><td style="padding-top:22px;color:#777777;font-family:${FONT};font-size:12px;line-height:21px;">
-              NobleCart by FineAscent<br>
-              <a href="${BRAND.support}" style="color:#666666;text-decoration:underline;">Contact support</a>
-              <span style="color:#b0b0b0;">&nbsp; · &nbsp;</span>
-              <a href="${BRAND.privacy}" style="color:#666666;text-decoration:underline;">Privacy policy</a>
-            </td></tr>
-          </table>
-        </td></tr>
-      </table>
-      <!--[if mso]></td></tr></table><![endif]-->
-    </td></tr>
-  </table>
-</body>
-</html>`.replace(/^[ \t]+$/gm, '');
+`.replace(/^[ \t]+$/gm, ''),
+  }), { logoUrl, wordmarkUrl });
   const text = [BRAND.name + ' by FineAscent', content.title, ...content.paragraphs,
     ...(content.code ? [content.code] : []),
     ...(action ? [action.label + ':\n' + action.url] : []), content.note,
@@ -182,5 +128,28 @@ export function renderSupabaseVerificationTemplate(mode) {
   return {
     html: message.html.replaceAll(marker, '{{ .ConfirmationURL }}'),
     text: message.text.replaceAll(marker, '{{ .ConfirmationURL }}'),
+  };
+}
+
+/** Receipt HTML stays identical to the approved application renderer. */
+export function renderReceiptEmail(receipt, options = {}) {
+  const currency = (receipt.currency || 'USD').toUpperCase();
+  const money = cents => {
+    try { return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(cents / 100); }
+    catch { return `${currency} ${(cents / 100).toFixed(2)}`; }
+  };
+  const lines = receipt.items.map(item => {
+    const qty = Number(item.quantity || item.qty || 1) || 1;
+    const unit = Number(item.unit_price_cents || item.amount_cents / qty || 0);
+    const total = Number(item.total_price_cents || item.amount_cents || 0);
+    return `${item.product_name || item.name || item.description || 'Item'} — Qty: ${qty}; Unit price: ${money(unit)}; Total: ${money(total)}`;
+  });
+  return {
+    html: previewImages(receiptEmailHtml(receipt), options),
+    text: ['NobleCart by FineAscent', 'Thank you for your purchase',
+      'We’ve received your payment. Here’s a summary of your order.',
+      `Receipt: ${receipt.receiptId || ''}`, `Date: ${receipt.timestamp}`, `Currency: ${currency}`,
+      ...lines, `Total amount: ${money(receipt.totalCents)}`, 'Keep this email for your records.',
+      `Contact support: ${SUPPORT_EMAIL}`, `Privacy: ${BRAND.privacy}`].join('\n\n'),
   };
 }

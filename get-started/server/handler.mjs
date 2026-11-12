@@ -1,4 +1,4 @@
-import { renderEmail } from './email-template.mjs';
+import { renderEmail, SUPPORT_EMAIL } from './email-template.mjs';
 
 const INBOX = 'fineascentcreative@gmail.com';
 const ORIGINS = new Set(['https://fineascent.org', 'https://www.fineascent.org', 'http://localhost:8765', 'http://127.0.0.1:8765']);
@@ -23,28 +23,29 @@ export function validateInquiry(input) {
   return result;
 }
 
-export function buildEmailBatch(data, senderEmail = INBOX) {
+export function buildEmailBatch(data, senderEmail = SUPPORT_EMAIL, previewOptions = {}) {
   const internal = renderEmail({
     title: 'A new conversation.', preview: 'A business inquiry for NobleCart.',
     paragraphs: [`Name: ${data.name}`, `Work email: ${data.email}`, `Company: ${data.company}`,
       `Interest: ${data.interest}`, 'Message:', ...data.message.split(/\r?\n/).filter(Boolean)],
-    note: 'Reply to this email to reach the person who sent the inquiry.',
-  });
+    note: 'Contact the visitor using the work email listed above.',
+  }, previewOptions);
   // A fixed acknowledgment avoids reflecting arbitrary visitor content to another inbox.
   const acknowledgment = renderEmail({
     title: 'A good place to begin.', preview: 'Your NobleCart inquiry has been received.',
     paragraphs: ['Thank you for reaching out.', 'Our team will review your inquiry and reply to your email.'],
     note: 'NobleCart by FineAscent. A team working alongside yours.',
-  });
+  }, previewOptions);
   return {
     sender: { name: 'NobleCart', email: senderEmail },
+    replyTo: { name: 'NobleCart', email: senderEmail },
     headers: { idempotencyKey: data.requestId },
-    subject: 'Your NobleCart inquiry', htmlContent: acknowledgment.html,
+    subject: 'Your NobleCart inquiry', htmlContent: acknowledgment.html, textContent: acknowledgment.text,
     messageVersions: [
-      { to: [{ email: INBOX, name: 'FineAscent' }], replyTo: { email: data.email, name: data.name },
-        subject: `NobleCart inquiry — ${data.company}`, htmlContent: internal.html },
-      { to: [{ email: data.email }], replyTo: { email: INBOX, name: 'NobleCart' },
-        subject: 'We’ve received your NobleCart inquiry', htmlContent: acknowledgment.html },
+      { to: [{ email: INBOX, name: 'FineAscent' }], replyTo: { email: senderEmail, name: 'NobleCart' },
+        subject: `NobleCart inquiry — ${data.company}`, htmlContent: internal.html, textContent: internal.text },
+      { to: [{ email: data.email }], replyTo: { email: senderEmail, name: 'NobleCart' },
+        subject: 'We’ve received your NobleCart inquiry', htmlContent: acknowledgment.html, textContent: acknowledgment.text },
     ],
   };
 }
@@ -111,7 +112,7 @@ export function createHandler({ env, fetchImpl = fetch, cryptoImpl = crypto, log
       reserved = true;
       const result = await fetchImpl('https://api.brevo.com/v3/smtp/email', {
         method: 'POST', headers: { 'api-key': apiKey, 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(buildEmailBatch(data, env('FROM_EMAIL') || INBOX)), signal: AbortSignal.timeout(15000),
+        body: JSON.stringify(buildEmailBatch(data, (env('FROM_EMAIL') || SUPPORT_EMAIL).trim())), signal: AbortSignal.timeout(15000),
       });
       const receipt = await result.json().catch(() => ({}));
       const duplicate = receipt.code === 'duplicate_parameter' && /idempotency/i.test(receipt.message || '');

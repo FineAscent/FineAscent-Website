@@ -50,11 +50,11 @@ Two functions, two tables, two pages.
 mkdir -p supabase/functions/delete-account supabase/functions/request-account-deletion
 
 # The authenticated deleter.
-cp config.ts brevo.ts purge.ts email-template.mjs supabase/functions/delete-account/
+cp config.ts brevo.ts purge.ts email-template.mjs email-layout.mjs receipt-email.mjs supabase/functions/delete-account/
 cp index.ts                    supabase/functions/delete-account/index.ts
 
 # The public request endpoint.
-cp config.ts brevo.ts purge.ts email-template.mjs supabase/functions/request-account-deletion/
+cp config.ts brevo.ts purge.ts email-template.mjs email-layout.mjs receipt-email.mjs supabase/functions/request-account-deletion/
 cp request-deletion.ts         supabase/functions/request-account-deletion/index.ts
 
 psql "$DATABASE_URL" -f sql/audit_table.sql
@@ -75,14 +75,15 @@ node --test account-deletion-kit/email-template.test.mjs
 
 Open `account-deletion-kit/web/email-preview.html`. It defaults to the verification
 link email and also previews verification codes, deletion confirmation, and
-account-deleted messages at desktop and phone widths. The
+account-deleted messages, receipts, and inquiry notifications at desktop and phone widths. The
 generated HTML/text uses the same template as Brevo, with the mountain image
 loaded locally for the preview. Its example confirmation
 URL uses `example.invalid` and cannot delete an account. No mail is sent by the
 preview or tests.
 
-`email-template.mjs` holds the wordmark, support/privacy links, matte colors,
-shared layout, and message copy. The wordmark uses the transparent PNG at
+`email-layout.mjs` is the approved shared header, footer, and light layout copied from
+NobelCart-Full. `email-template.mjs` supplies escaped message copy and plain text;
+`receipt-email.mjs` is the approved receipt renderer from that application. The wordmark uses the transparent PNG at
 `https://raw.githubusercontent.com/FineAscent/FineAscent-Website/d81c1579aa11e6986029ead9a7dc590c222abbfe/images/noblecart-wordmark-black.png` without a background, with
 NobleCart alt text if images are blocked. The small top-right mountain corner stamp without a badge or backing uses
 the original PNG at `https://fineascent.org/images/logo2.png`; keep both public assets available
@@ -96,9 +97,9 @@ desktop media rules add room in full HTML sends. Test on the actual iPhone mail
 app before claiming an exact match. Each message includes
 a plain-text version; the confirmation also includes a copyable fallback link.
 
-The configured sender name is NobleCart. The sender email is still a placeholder:
-set `brevo.sender.email` in `config.ts` to your **Brevo-verified** sender before
-deployment. Deploying the updated functions activates the new emails; changing
+The configured sender name is NobleCart. From, Reply-To, and support links use
+`support@fineascent.org`, which is already verified in Brevo. `FROM_EMAIL` defaults
+to this address and should remain set to it; reuse the existing `BREVO_API_KEY`. Deploying the updated functions activates the new emails; changing
 the website alone does not change already-deployed functions. Inbox checks in
 Gmail, Outlook, and Apple Mail remain necessary before production use; browser
 previews do not emulate those clients.
@@ -153,7 +154,7 @@ In `config.ts`, set at minimum:
 - `confirmUrl` — the deployed URL of `web/confirm.html`, HTTPS.
 - `allowedOrigins` — your real domains. Leaving `["*"]` in production lets any
   site call these endpoints from a visitor's browser.
-- `brevo.sender` — a from-address on a domain you have authenticated in Brevo.
+- `brevo.sender` — the approved NobleCart identity, `support@fineascent.org`.
 - `tables` and `buckets` — see below.
 - Leave `selfServiceOnly: true`.
 

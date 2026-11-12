@@ -25,7 +25,13 @@ Production image URLs must be publicly available before using the template:
 - `https://raw.githubusercontent.com/FineAscent/FineAscent-Website/d81c1579aa11e6986029ead9a7dc590c222abbfe/images/noblecart-wordmark-black.png`
 - `https://fineascent.org/images/logo2.png`
 
-The code template is an optional, inactive variant. TXT files are provided
+Set Supabase Auth’s separate SMTP From and Reply-To (where available) to
+`support@fineascent.org`. Every application support link uses this address.
+
+The code template is an optional, inactive variant. Its `{{ .Token }}` panel
+receives the real code from Supabase; do not paste a preview code into production.
+The optional fallback keeps `{{ .ConfirmationURL }}` intact. Existing expiration
+and verification behavior are preserved. TXT files are provided
 as plain-text references; hosted Supabase's dashboard body field uses HTML.
 
 ## Regenerate and preview

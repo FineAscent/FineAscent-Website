@@ -1,0 +1,23 @@
+NobleCart by FineAscent
+
+Thank you for your purchase
+
+We’ve received your payment. Here’s a summary of your order.
+
+Receipt: PREVIEW-ONLY
+
+Date: November 5, 2026
+
+Currency: USD
+
+Organic apples — Qty: 2; Unit price: $2.49; Total: $4.98
+
+Whole grain bread — Qty: 1; Unit price: $6.25; Total: $6.25
+
+Total amount: $11.23
+
+Keep this email for your records.
+
+Contact support: support@fineascent.org
+
+Privacy: https://fineascent.org/noblecart/privacy-policy/

@@ -4,7 +4,8 @@
 The front end calls its public URL. No API keys are shipped to the browser.
 
 - Inbox: **fineascentcreative@gmail.com**. Subject: `NobleCart inquiry — Company`.
-- The inbox message's Reply-To is the visitor's validated work email.
+- From and Reply-To for both messages: **support@fineascent.org**. The visitor’s
+  validated work email stays in the internal message body for staff follow-up.
 - A separate fixed, branded acknowledgment goes to the visitor in the same
   Brevo batch. No visitor message text is echoed in that acknowledgment.
 - The UI confirms only after Brevo accepts both message versions. Provider
@@ -26,7 +27,7 @@ and a service-role-only reservation function. Both tables have RLS enabled and
 no anonymous/authenticated grants. Apply that schema before first deployment.
 
 Secrets already configured in Supabase: `BREVO_API_KEY`, `IP_HASH_SALT`, and
-`FROM_EMAIL` (a verified sender). Supabase injects `SUPABASE_URL` and
+`FROM_EMAIL` (`support@fineascent.org`, the verified sender). Supabase injects `SUPABASE_URL` and
 `SUPABASE_SERVICE_ROLE_KEY`. Never copy secret values into the website.
 
 From the repository root:
@@ -36,7 +37,7 @@ node --test get-started/inquiry.test.mjs get-started/server/handler.test.mjs
 sh get-started/server/deploy.sh
 ```
 
-The deploy script refreshes the shared renderer from
+The deploy script refreshes the shared renderer, approved layout, and receipt dependency from
 `account-deletion-kit/email-template.mjs` and copies this bundle into the ignored
 Supabase working directory. It deploys **only** `business-inquiry`; it does not
 change authentication or other functions. No website publishing is performed.

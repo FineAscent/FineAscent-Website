@@ -21,10 +21,17 @@ test('validates fields and rejects header injection and oversized messages', () 
     assert.throws(() => validateInquiry({...payload,...changes}));
   }
 });
-test('inbox recipient stays fixed, Reply-To is the visitor, and HTML is escaped', () => {
+test('inbox recipient stays fixed, From and Reply-To use support, and HTML is escaped', () => {
   const batch = buildEmailBatch({...payload,company:'<img src=x onerror=alert(1)>',message:'<script>bad</script>'});
   assert.equal(batch.messageVersions[0].to[0].email,'fineascentcreative@gmail.com');
-  assert.equal(batch.messageVersions[0].replyTo.email,payload.email);
+  assert.equal(batch.sender.email,'support@fineascent.org');
+  assert.equal(batch.replyTo.email,'support@fineascent.org');
+  for (const message of batch.messageVersions) {
+    assert.equal(message.replyTo.email,'support@fineascent.org');
+    assert.ok(message.htmlContent.includes('mailto:support@fineascent.org'));
+    assert.ok(message.textContent.includes('support@fineascent.org'));
+  }
+  assert.ok(batch.messageVersions[0].textContent.includes(payload.email));
   assert.equal(batch.messageVersions[1].to[0].email,payload.email);
   assert.ok(batch.messageVersions[0].htmlContent.includes('&lt;script&gt;'));
   assert.ok(!batch.messageVersions[0].htmlContent.includes('<script>'));
@@ -49,6 +56,10 @@ test('success requires a provider receipt, then marks reservation sent; hashes o
   const res=await handler(request());
   assert.deepEqual(await res.json(),{ok:true});
   assert.equal(calls.length,3);
+  const sent = JSON.parse(calls[1].options.body);
+  assert.equal(sent.sender.email, 'support@fineascent.org');
+  assert.equal(sent.replyTo.email, 'support@fineascent.org');
+  assert.ok(sent.messageVersions.every(message => message.replyTo.email === 'support@fineascent.org'));
   assert.equal(calls[2].options.body,JSON.stringify({state:'sent'}));
   assert.ok(!calls[0].options.body.includes(payload.email));
   assert.equal(JSON.parse(calls[0].options.body).p_email_hash.length,64);

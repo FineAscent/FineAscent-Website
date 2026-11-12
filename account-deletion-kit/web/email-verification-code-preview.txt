@@ -13,6 +13,6 @@ Keep this code private. If you did not request this email, you can ignore it.
 Or confirm your email using this link:
 https://example.invalid/verify-email?token=preview-only
 
-Contact support: fineascentcreative@gmail.com
+Contact support: support@fineascent.org
 
 Privacy: https://fineascent.org/noblecart/privacy-policy/

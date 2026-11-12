@@ -1,5 +1,5 @@
 // The only file you should need to edit per project.
-import { renderConfirmationEmail, renderFarewellEmail } from "./email-template.mjs";
+import { renderConfirmationEmail, renderFarewellEmail, SUPPORT_EMAIL } from "./email-template.mjs";
 
 export interface PurgeTable {
   /** Table name inside `schema`. */
@@ -41,8 +41,8 @@ export const CONFIG = {
     deleteContact: true,
     /** Send a final notice before removing the contact. */
     sendFarewell: true,
-    // Set the email to a sender address verified in your Brevo account.
-    sender: { name: "NobleCart", email: "no-reply@yourdomain.com" },
+    // Approved, verified sender; FROM_EMAIL may supply the same identity at runtime.
+    sender: { name: "NobleCart", email: SUPPORT_EMAIL },
 
     /** Sent by the public form. Clicking the link is what authorizes deletion. */
     confirmSubject: "Confirm deleting your account",

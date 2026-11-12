@@ -3,6 +3,10 @@
 
 import { CONFIG } from "./config.ts";
 
+function emailSender() {
+  return { ...CONFIG.brevo.sender, email: (Deno.env.get("FROM_EMAIL") || CONFIG.brevo.sender.email).trim() };
+}
+
 const BREVO_BASE = "https://api.brevo.com/v3";
 
 export interface StepResult {
@@ -84,10 +88,12 @@ export async function sendConfirmationEmail(
   link: string,
 ): Promise<StepResult> {
   try {
+    const sender = emailSender();
     const res = await brevoFetch("/smtp/email", {
       method: "POST",
       body: JSON.stringify({
-        sender: CONFIG.brevo.sender,
+        sender,
+        replyTo: sender,
         to: [{ email }],
         subject: CONFIG.brevo.confirmSubject,
         htmlContent: CONFIG.brevo.confirmHtml(link),
@@ -122,10 +128,12 @@ export async function sendFarewellEmail(
   }
 
   try {
+    const sender = emailSender();
     const res = await brevoFetch("/smtp/email", {
       method: "POST",
       body: JSON.stringify({
-        sender: CONFIG.brevo.sender,
+        sender,
+        replyTo: sender,
         to: [{ email, name: name || email }],
         subject: CONFIG.brevo.subject,
         htmlContent: CONFIG.brevo.html(name),
