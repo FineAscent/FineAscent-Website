@@ -886,3 +886,7 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
   .live-countdown { padding-block: 24px; }
   .live-label { font-size: 9px; letter-spacing: .14em; }
 }
+
+/* Keep the scheduled reveal out of layout and navigation until its start. */
+#section-5.live-section[hidden], .dot-nav .dot[hidden] { display: none !important; }
+.privacy-link[aria-disabled="true"] { cursor: default; color: rgba(0,0,0,0.35); }

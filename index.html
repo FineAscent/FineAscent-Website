@@ -61,9 +61,9 @@
   </section>
 
   <!-- Section 5: Live countdown -->
-  <section id="section-5" class="section cta-section live-section" aria-labelledby="live-title">
+  <section id="section-5" class="section cta-section live-section" aria-labelledby="live-title" hidden>
     <div class="container">
-      <h2 id="live-title">Coming live.</h2>
+      <h2 id="live-title">Full reveal</h2>
       <p class="live-date"><time datetime="2026-11-13T14:00:00-06:00">November 13, 2026 &middot; 2 PM CT</time></p>
       <div class="live-countdown" role="timer" aria-label="Time remaining until November 13 at 2 PM Chicago time" aria-live="off">
         <div class="live-unit"><span class="live-number" data-countdown="hours">31</span><span class="live-label">Hours</span></div>
@@ -81,7 +81,7 @@
   <script src="homepage-countdown.js" defer></script>
 
   <!-- Privacy link (bottom-right, text only) -->
-  <a class="privacy-link" href="noblecart/privacy-policy/" aria-label="Privacy Policy">Privacy</a>
+  <span class="privacy-link" role="link" aria-disabled="true" aria-label="Privacy Policy (unavailable)">Privacy</span>
 
   <!-- Right-side dot navigation -->
   <nav class="dot-nav" aria-label="Section navigation">
@@ -90,7 +90,7 @@
       <button class="dot" data-target="#mission" aria-label="Vision"></button>
       <button class="dot" data-target="#section-3" aria-label="Section 3"></button>
       <button class="dot" data-target="#mission-2" aria-label="Mission"></button>
-      <button class="dot" data-target="#section-5" aria-label="Live countdown"></button>
+      <button class="dot" data-target="#section-5" aria-label="Live countdown" hidden></button>
       <span class="indicator" aria-hidden="true"></span>
     </div>
   </nav>
@@ -173,8 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Dot navigation setup
   const rail = document.querySelector('.dot-rail');
   const indicator = document.querySelector('.dot-rail .indicator');
-  const dots = Array.from(document.querySelectorAll('.dot-rail .dot'));
-  const sectionList = Array.from(document.querySelectorAll('.section'));
+  const allDots = Array.from(document.querySelectorAll('.dot-rail .dot'));
+  let dots = allDots.filter(dot => !dot.hidden);
+  let sectionList = Array.from(document.querySelectorAll('.section')).filter(section => !section.hidden);
+  document.addEventListener('revealvisibilitychange', () => {
+    dots = allDots.filter(dot => !dot.hidden);
+    sectionList = Array.from(document.querySelectorAll('.section')).filter(section => !section.hidden);
+    computeDotPositions();
+    onScroll();
+  });
   let dotPositions = [];
   let ticking = false;
 
@@ -239,13 +246,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Click to scroll
-  dots.forEach((dot, i) => {
+  allDots.forEach((dot) => {
     dot.addEventListener('click', () => {
       const sel = dot.getAttribute('data-target');
       const target = document.querySelector(sel);
-      if (target) {
+      if (target && !target.hidden) {
         target.scrollIntoView({ behavior: 'smooth', block: isMobile ? 'start' : 'center' });
-        setActiveIndex(i);
+        setActiveIndex(dots.indexOf(dot));
         if (target.id) setNavVisibilityBySectionId(target.id);
       }
     });
