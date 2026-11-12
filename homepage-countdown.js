@@ -20,7 +20,7 @@
     const remaining = Math.max(0, Math.ceil((endsAt - Math.max(now, startsAt)) / 1000));
     const values = { hours: Math.floor(remaining / 3600), minutes: Math.floor(remaining / 60) % 60, seconds: remaining % 60 };
     for (const [unit, value] of Object.entries(values)) fields[unit].textContent = String(value).padStart(2, '0');
-    status.textContent = now < startsAt ? 'Countdown begins November 12 at 7 AM CT.' : now < endsAt ? 'Until we go live.' : 'The countdown is complete.';
+    status.textContent = now < startsAt ? 'Countdown begins November 12 at 7 AM CT.' : now < endsAt ? 'Our First Product' : 'The countdown is complete.';
   };
   update();
   const interval = setInterval(update, 1000);
