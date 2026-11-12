@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="fineascent-home">
+<body>
 <section id="section-1" class="section">
   <div class="container">
     <img class="logo" src="images/FineAscent2.webp" alt="FineAscent logo" width="2314" height="341" fetchpriority="high">
@@ -265,8 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function navigateToIndex(idx) {
     const clamped = Math.max(0, Math.min(sectionList.length - 1, idx));
     const target = sectionList[clamped];
-    // At either end, do not recenter the same section on every wheel event.
-    if (!target || clamped === activeIndexByViewportCenter()) return;
+    if (!target) return;
     pagingLock = true;
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     // Set active dot by section ID to avoid index mismatch after reordering
