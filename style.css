@@ -890,3 +890,22 @@ body:not(.nav-visible) .dot-nav { opacity: 0; pointer-events: none; }
 /* Keep the scheduled reveal out of layout and navigation until its start. */
 #section-5.live-section[hidden], .dot-nav .dot[hidden] { display: none !important; }
 .privacy-link[aria-disabled="true"] { cursor: default; color: rgba(0,0,0,0.35); }
+
+/* Keep homepage snap targets stable: padding belongs inside the viewport,
+   and reveal animations must not move the sections being measured. */
+.fineascent-home .section {
+  box-sizing: border-box;
+  transform: none;
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
+@media (max-height: 760px) {
+  .fineascent-home #section-5.live-section { padding-block: 48px; }
+  .fineascent-home .live-countdown { margin-block: 30px 20px; padding-block: 18px; }
+  .fineascent-home .live-number,
+  .fineascent-home .live-separator { font-size: clamp(52px, min(14vw, 19svh), 172px); }
+  .fineascent-home #section-5.live-section .btn-matte { margin-top: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fineascent-home .section { transition: none; }
+}
